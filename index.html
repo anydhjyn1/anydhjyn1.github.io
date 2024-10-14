@@ -23,47 +23,35 @@
         #search-box {
             width: 100%;
             height: 100px;
-            padding: 10px;
             font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 10px;
             margin-bottom: 10px;
-            resize: vertical;
+            box-sizing: border-box;
         }
         #search-button, #copy-button {
             width: 100%;
             padding: 10px;
             font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
             margin-bottom: 10px;
         }
-        #copy-button {
-            background-color: #008CBA;
-        }
-        #search-button:hover, #copy-button:hover {
-            opacity: 0.8;
-        }
-        #message {
-            margin-top: 20px;
-            color: #ff0000;
-        }
-        #links {
-            margin-top: 20px;
+        #engine-options {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
-        #links a {
-            padding: 5px 10px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            text-decoration: none;
-            color: #333;
+        .engine-option {
+            margin-bottom: 5px;
+        }
+        #message {
+            color: red;
+            margin-top: 10px;
+        }
+        #ai-links {
+            margin-top: 20px;
+        }
+        #ai-links a {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -71,31 +59,60 @@
     <div id="search-container">
         <textarea id="search-box" placeholder="検索キーワードを入力してください"></textarea>
         <button id="search-button">検索</button>
-        <button id="copy-button">検索テキストをコピー</button>
+        <button id="copy-button">テキストをコピー</button>
+        <div id="engine-options">
+            <label class="engine-option">
+                <input type="checkbox" id="google-check" checked>
+                <a href="https://google.co.jp" target="_blank">Google</a>
+            </label>
+            <label class="engine-option">
+                <input type="checkbox" id="perplexity-check" checked>
+                <a href="https://www.perplexity.ai" target="_blank">Perplexity</a>
+            </label>
+            <label class="engine-option">
+                <input type="checkbox" id="genspark-check" checked>
+                <a href="https://www.genspark.ai" target="_blank">GenSpark</a>
+            </label>
+            <label class="engine-option">
+                <input type="checkbox" id="yahoo-check">
+                <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a>
+            </label>
+            <label class="engine-option">
+                <input type="checkbox" id="amazon-check">
+                <a href="https://www.amazon.co.jp/-/en/gp/css/homepage.html?ref_=nav_youraccount_btn&language=ja_JP" target="_blank">Amazon</a>
+            </label>
+        </div>
+        <label>
+            <input type="checkbox" id="enter-search" checked>
+            エンターキーで検索
+        </label>
+        <div id="message"></div>
     </div>
-    <div id="message"></div>
-    <div id="links">
-        <a href="http://google.co.jp" target="_blank">Google</a>
+    <div id="ai-links">
         <a href="https://gemini.google.com/app?hl=ja" target="_blank">Gemini</a>
         <a href="https://aistudio.google.com/app/prompts/new_chat" target="_blank">AI Studio</a>
         <a href="https://claude.ai/new" target="_blank">Claude</a>
         <a href="https://mapify.so/ja/app/new" target="_blank">Mapify</a>
-        <a href="https://www.amazon.co.jp/-/en/gp/css/homepage.html?ref_=nav_youraccount_btn&language=ja_JP" target="_blank">Amazon アカウント</a>
     </div>
 
     <script>
+        // 検索エンジンの設定
+        const searchEngines = [
+            { id: 'google-check', url: 'https://google.co.jp/search?q=%s' },
+            { id: 'perplexity-check', url: 'https://www.perplexity.ai/search/new?q=%s' },
+            { id: 'genspark-check', url: 'https://www.genspark.ai/search?query=%s' },
+            { id: 'yahoo-check', url: 'https://search.yahoo.co.jp/search?p=%s' },
+            { id: 'amazon-check', url: 'https://www.amazon.co.jp/s?k=%s' }
+        ];
+
+        // DOM要素の取得
         const searchBox = document.getElementById('search-box');
         const searchButton = document.getElementById('search-button');
         const copyButton = document.getElementById('copy-button');
         const messageDiv = document.getElementById('message');
+        const enterSearch = document.getElementById('enter-search');
 
-        const searchEngines = [
-            { name: 'Google', url: 'https://google.co.jp/search?q=%s' },
-            { name: 'Perplexity', url: 'https://www.perplexity.ai/search/new?q=%s' },
-            { name: 'GenSpark', url: 'https://www.genspark.ai/search?query=%s' }
-
-        ];
-
+        // 検索関数
         function performSearch() {
             const query = encodeURIComponent(searchBox.value.trim());
             if (query === '') {
@@ -103,44 +120,45 @@
                 return;
             }
 
-            messageDiv.textContent = '';
+            let openedWindows = 0;
+            searchEngines.forEach((engine, index) => {
+                if (document.getElementById(engine.id).checked) {
+                    setTimeout(() => {
+                        const newWindow = window.open(engine.url.replace('%s', query), '_blank');
+                        if (newWindow) {
+                            openedWindows++;
+                        } else if (index === 0) {
+                            messageDiv.textContent = 'ポップアップがブロックされました。検索を許可してください。';
+                        }
+                    }, index * 100);
+                }
+            });
 
-            // 最初の検索エンジン（Google）は直接開く
-            window.open(searchEngines[0].url.replace('%s', query), '_blank');
-
-            // 残りの検索エンジンは少し遅延を入れて開く
             setTimeout(() => {
-                let openedWindows = 0;
-                for (let i = 1; i < searchEngines.length; i++) {
-                    const win = window.open(searchEngines[i].url.replace('%s', query), '_blank');
-                    if (win) {
-                        openedWindows++;
-                    }
+                if (openedWindows > 0) {
+                    messageDiv.textContent = `${openedWindows}個の検索タブが開かれました。`;
                 }
-
-                if (openedWindows < searchEngines.length - 1) {
-                    messageDiv.textContent = 'ポップアップがブロックされました。すべての検索結果を表示するには、ポップアップを許可してください。';
-                }
-            }, 100);
+            }, searchEngines.length * 100);
         }
 
+        // イベントリスナーの設定
         searchButton.addEventListener('click', performSearch);
 
-        searchBox.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
+        searchBox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey && enterSearch.checked) {
                 e.preventDefault();
                 performSearch();
             }
         });
 
-        copyButton.addEventListener('click', function() {
+        copyButton.addEventListener('click', () => {
             searchBox.select();
             document.execCommand('copy');
             messageDiv.textContent = 'テキストがコピーされました。';
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 2000);
         });
+
+        // ポップアップ許可メッセージ
+        messageDiv.textContent = 'このページの使用では、ポップアップを許可してください。';
     </script>
 </body>
 </html>
