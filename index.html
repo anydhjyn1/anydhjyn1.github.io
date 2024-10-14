@@ -1,77 +1,92 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>複数検索エンジン同時検索</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .search-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input[type="text"] {
-            width: 300px;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="検索キーワードを入力">
-        <button onclick="multiSearch()">検索</button>
-    </div>
+   <html lang="ja">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>複数検索エンジン同時検索</title>
+       <style>
+           body {
+               font-family: Arial, sans-serif;
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               height: 100vh;
+               margin: 0;
+               background-color: #f0f0f0;
+           }
+           .search-container {
+               background-color: white;
+               padding: 20px;
+               border-radius: 8px;
+               box-shadow: 0 0 10px rgba(0,0,0,0.1);
+           }
+           input[type="text"] {
+               width: 300px;
+               padding: 10px;
+               font-size: 16px;
+               border: 1px solid #ddd;
+               border-radius: 4px;
+           }
+           button {
+               padding: 10px 20px;
+               font-size: 16px;
+               background-color: #4CAF50;
+               color: white;
+               border: none;
+               border-radius: 4px;
+               cursor: pointer;
+               margin-left: 10px;
+           }
+           button:hover {
+               background-color: #45a049;
+           }
+           #message {
+               margin-top: 10px;
+               color: #666;
+           }
+       </style>
+   </head>
+   <body>
+       <div class="search-container">
+           <input type="text" id="searchInput" placeholder="検索キーワードを入力">
+           <button onclick="multiSearch()">検索</button>
+           <div id="message"></div>
+       </div>
 
-    <script>
-        function multiSearch() {
-            const searchEngines = [
-                'https://google.co.jp/search?q=%s',
-                'https://www.genspark.ai/search?query=%s',
-                'https://mapify.so/ja?q=%s',
-                'https://www.perplexity.ai/search/new?q=%s'
-            ];
+       <script>
+           const searchEngines = [
+               'https://google.co.jp/search?q=%s',
+               'https://www.genspark.ai/search?query=%s',
+               'https://mapify.so/ja?q=%s',
+               'https://www.perplexity.ai/search/new?q=%s'
+           ];
 
-            const searchTerm = encodeURIComponent(document.getElementById('searchInput').value);
+           function multiSearch() {
+               const searchTerm = encodeURIComponent(document.getElementById('searchInput').value);
+               const messageElement = document.getElementById('message');
 
-            searchEngines.forEach(engine => {
-                const url = engine.replace('%s', searchTerm);
-                window.open(url, '_blank');
-            });
-        }
+               // 最初の検索エンジンは直接開く
+               window.open(searchEngines[0].replace('%s', searchTerm), '_blank');
 
-        // エンターキーでの検索を有効にする
-        document.getElementById('searchInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // フォームのデフォルト送信を防ぐ
-                multiSearch();
-            }
-        });
-    </script>
-</body>
-</html>
+               // 残りの検索エンジンは少し遅延を入れて開く
+               setTimeout(() => {
+                   for (let i = 1; i < searchEngines.length; i++) {
+                       const url = searchEngines[i].replace('%s', searchTerm);
+                       const opened = window.open(url, '_blank');
+                       if (!opened) {
+                           messageElement.textContent = "ポップアップがブロックされました。ブラウザの設定で許可してください。";
+                           break;
+                       }
+                   }
+               }, 100);
+           }
+
+           document.getElementById('searchInput').addEventListener('keypress', function(event) {
+               if (event.key === 'Enter') {
+                   event.preventDefault();
+                   multiSearch();
+               }
+           });
+       </script>
+   </body>
+   </html>
