@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
     <style>
+        /* 前回のCSSスタイルをそのまま使用 */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -112,6 +113,35 @@
         const messageDiv = document.getElementById('message');
         const enterSearch = document.getElementById('enter-search');
 
+        // 設定を保存する関数
+        function saveSettings() {
+            const settings = {
+                engineStates: searchEngines.reduce((acc, engine) => {
+                    acc[engine.id] = document.getElementById(engine.id).checked;
+                    return acc;
+                }, {}),
+                enterSearchEnabled: enterSearch.checked
+            };
+            localStorage.setItem('multiSearchSettings', JSON.stringify(settings));
+        }
+
+        // 設定を読み込む関数
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('multiSearchSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                searchEngines.forEach(engine => {
+                    const checkbox = document.getElementById(engine.id);
+                    if (checkbox && settings.engineStates.hasOwnProperty(engine.id)) {
+                        checkbox.checked = settings.engineStates[engine.id];
+                    }
+                });
+                if (settings.hasOwnProperty('enterSearchEnabled')) {
+                    enterSearch.checked = settings.enterSearchEnabled;
+                }
+            }
+        }
+
         // 検索関数
         function performSearch() {
             const query = encodeURIComponent(searchBox.value.trim());
@@ -139,6 +169,9 @@
                     messageDiv.textContent = `${openedWindows}個の検索タブが開かれました。`;
                 }
             }, searchEngines.length * 100);
+
+            // 検索後に設定を保存
+            saveSettings();
         }
 
         // イベントリスナーの設定
@@ -156,6 +189,14 @@
             document.execCommand('copy');
             messageDiv.textContent = 'テキストがコピーされました。';
         });
+
+        // チェックボックスの状態が変更されたときに設定を保存
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', saveSettings);
+        });
+
+        // ページ読み込み時に設定を読み込む
+        window.addEventListener('load', loadSettings);
 
         // ポップアップ許可メッセージ
         messageDiv.textContent = 'このページの使用では、ポップアップを許可してください。';
