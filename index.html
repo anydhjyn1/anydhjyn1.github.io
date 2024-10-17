@@ -118,7 +118,6 @@
         <h2>その他オプション</h2>
         <div id="otherOptions">
             <label><input type="checkbox" id="enterSearch" checked> エンターキーで検索</label>
-            <label><input type="checkbox" id="activateNewTab"> 新しいタブをアクティブにする</label>
             <label><input type="checkbox" id="recordHistory" checked> 検索履歴を記録する</label>
         </div>
         <div id="links">
@@ -154,7 +153,6 @@
             yahooShopping: document.getElementById('yahooShoppingCheck')
         };
         const enterSearchCheckbox = document.getElementById('enterSearch');
-        const activateNewTabCheckbox = document.getElementById('activateNewTab');
         const recordHistoryCheckbox = document.getElementById('recordHistory');
         const individualSearchButtons = document.querySelectorAll('#individualSearchButtons button');
 
@@ -177,7 +175,6 @@
             const settings = {
                 engines: Object.fromEntries(Object.entries(engineCheckboxes).map(([key, checkbox]) => [key, checkbox.checked])),
                 enterSearch: enterSearchCheckbox.checked,
-                activateNewTab: activateNewTabCheckbox.checked,
                 recordHistory: recordHistoryCheckbox.checked
             };
             try {
@@ -198,7 +195,6 @@
                         }
                     });
                     enterSearchCheckbox.checked = settings.enterSearch;
-                    activateNewTabCheckbox.checked = settings.activateNewTab;
                     recordHistoryCheckbox.checked = settings.recordHistory !== undefined ? settings.recordHistory : true;
                 }
             } catch (error) {
@@ -258,7 +254,7 @@
 
             let encodedQuery = specialEncodingEngines.includes(engine) ? specialEncode(query) : encodeURIComponent(query);
             const url = searchEngines[engine].replace('%s', encodedQuery);
-            window.open(url, '_blank', activateNewTabCheckbox.checked ? 'noopener' : 'noopener,noreferrer');
+            window.open(url, '_blank');
             saveSearchHistory(query);
         }
 
@@ -276,7 +272,7 @@
                     setTimeout(() => {
                         let encodedQuery = specialEncodingEngines.includes(engine) ? specialEncode(query) : encodeURIComponent(query);
                         const url = searchEngines[engine].replace('%s', encodedQuery);
-                        const newWindow = window.open(url, '_blank', activateNewTabCheckbox.checked ? 'noopener' : 'noopener,noreferrer');
+                        const newWindow = window.open(url, '_blank');
                         if (newWindow) {
                             openedWindows++;
                         }
@@ -320,7 +316,6 @@
             checkbox.addEventListener('change', saveSettings);
         });
         enterSearchCheckbox.addEventListener('change', saveSettings);
-        activateNewTabCheckbox.addEventListener('change', saveSettings);
         recordHistoryCheckbox.addEventListener('change', saveSettings);
 
         // 個別の検索ボタンにイベントリスナーを設定
