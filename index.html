@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
     <style>
+        /* 以前のCSSスタイルをここに保持 */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -96,6 +97,7 @@
     </style>
 </head>
 <body>
+    <!-- 以前のHTML構造をここに保持 -->
     <div class="container">
         <div class="main-content">
             <h1>複数検索エンジン同時検索</h1>
@@ -200,10 +202,12 @@
         function saveHistory(query) {
             if (recordHistoryCheckbox.checked) {
                 let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-                history.unshift(query);
-                history = history.slice(0, 10); // 最新10件のみ保持
-                localStorage.setItem('searchHistory', JSON.stringify(history));
-                updateHistoryList();
+                if (!history.includes(query)) {
+                    history.unshift(query);
+                    history = history.slice(0, 10); // 最新10件のみ保持
+                    localStorage.setItem('searchHistory', JSON.stringify(history));
+                    updateHistoryList();
+                }
             }
         }
 
@@ -239,20 +243,33 @@
             }
 
             window.open(url, '_blank');
-            saveHistory(query);
         }
 
         // まとめて検索
-        searchAllBtn.addEventListener('click', () => {
+        function performAllSearch() {
+            const query = searchBox.value.trim();
+            if (query === '') {
+                errorMessage.textContent = '検索語句を入力してください。';
+                return;
+            }
+            errorMessage.textContent = '';
+
             document.querySelectorAll('input[name="searchEngine"]:checked').forEach(checkbox => {
                 performSearch(checkbox.value);
             });
-        });
+
+            // まとめて検索時に1回だけ履歴を保存
+            saveHistory(query);
+        }
+
+        // まとめて検索ボタンのイベントリスナー
+        searchAllBtn.addEventListener('click', performAllSearch);
 
         // 個別検索ボタンのイベントリスナー
         Object.keys(searchEngines).forEach(engine => {
             document.getElementById(`search${engine.charAt(0).toUpperCase() + engine.slice(1)}`).addEventListener('click', () => {
                 performSearch(engine);
+                saveHistory(searchBox.value.trim()); // 個別検索時にも履歴を保存
             });
         });
 
@@ -271,7 +288,7 @@
         searchBox.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && enterSearchCheckbox.checked) {
                 e.preventDefault();
-                searchAllBtn.click();
+                performAllSearch(); // エンターキーで"まとめて検索"を実行
             }
         });
 
