@@ -5,165 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5a623;
-            --background-color: #f0f4f8;
-            --text-color: #333;
-            --border-color: #ddd;
-        }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
             margin: 0;
             padding: 20px;
+            background-color: #f0f0f0;
         }
         .container {
             display: flex;
             flex-wrap: wrap;
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
-            gap: 20px;
         }
         .main-content {
-            flex: 1 1 calc(70% - 10px);
-            max-width: calc(70% - 10px);
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff;
             padding: 20px;
-            background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .history-panel {
-            flex: 1 1 calc(30% - 10px);
-            max-width: calc(30% - 10px);
+            flex: 0 0 250px;
+            background-color: #ffffff;
             padding: 20px;
-            background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        h1, h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
+        h1 {
+            color: #333;
         }
         #searchBox {
             width: 100%;
-            height: 150px; /* 検索ボックスを大きくしました */
-            margin: 20px 0;
-            padding: 15px;
-            font-size: 18px;
-            border: 2px solid var(--primary-color);
-            border-radius: 8px;
-            resize: vertical;
-        }
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         button {
-            padding: 12px 24px;
-            font-size: 16px;
-            background-color: var(--primary-color);
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #3a7bc8;
+            background-color: #45a049;
         }
-        button:active {
-            transform: translateY(1px);
+        .button-group {
+            margin-bottom: 15px;
         }
-        #individualSearchButtons button {
-            background-color: var(--secondary-color);
-            flex: 1 1 calc(33.333% - 10px);
-            max-width: calc(33.333% - 10px);
-            text-align: center;
+        .checkbox-group, .option-group {
+            margin-bottom: 15px;
         }
-        #individualSearchButtons button:hover {
-            background-color: #e09615;
-        }
-        .options-group {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .options-group h2 {
-            margin-top: 0;
-        }
-        .options-group label {
+        .checkbox-group label, .option-group label {
             display: inline-block;
-            margin: 5px 10px;
+            margin-right: 10px;
         }
         .link-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            margin-top: 20px;
         }
         .link-group a {
-            color: var(--primary-color);
+            display: inline-block;
+            margin-right: 10px;
+            color: #1a0dab;
             text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid var(--primary-color);
-            border-radius: 4px;
-            transition: all 0.3s;
         }
         .link-group a:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        #message {
-            margin-top: 20px;
-            color: #d9534f;
-            font-weight: bold;
+            text-decoration: underline;
         }
         #historyList {
             list-style-type: none;
             padding: 0;
         }
         #historyList li {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
         }
         #historyList li:hover {
-            background-color: #e9ecef;
-        }
-        .history-item-query {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        .history-item-date {
-            font-size: 0.8em;
-            color: #666;
-        }
-        #clearHistoryButton {
-            margin-top: 10px;
-            background-color: #d9534f;
-        }
-        #clearHistoryButton:hover {
-            background-color: #c9302c;
+            background-color: #f5f5f5;
         }
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
             }
-            .main-content, .history-panel {
-                flex: 1 1 100%;
-                max-width: 100%;
-            }
-            #individualSearchButtons button {
-                flex: 1 1 calc(50% - 10px);
-                max-width: calc(50% - 10px);
+            .history-panel {
+                flex: 1;
             }
         }
     </style>
@@ -172,61 +107,198 @@
     <div class="container">
         <div class="main-content">
             <h1>複数検索エンジン同時検索</h1>
-            <textarea id="searchBox" placeholder="検索語句を入力してください"></textarea>
+            <input type="text" id="searchBox" placeholder="検索語句を入力してください">
             <div class="button-group">
-                <button id="searchButton">まとめて検索</button>
-                <button id="copyButton">検索語句のコピー</button>
-                <button id="clearButton">検索語句のクリア</button>
+                <button id="searchAll">まとめて検索</button>
+                <button id="copySearch">検索語句のコピー</button>
+                <button id="clearSearch">検索語句のクリア</button>
             </div>
-            <div id="individualSearchButtons" class="button-group">
-                <button data-engine="google">Googleで検索</button>
-                <button data-engine="perplexity">Perplexityで検索</button>
-                <button data-engine="genSpark">GenSparkで検索</button>
-                <button data-engine="yahoo">Yahooで検索</button>
-                <button data-engine="amazon">Amazonで検索</button>
-                <button data-engine="rakuten">楽天市場で検索</button>
-                <button data-engine="yahooShopping">Yahoo!ショッピングで検索</button>
+            <div class="button-group">
+                <button class="individual-search" data-engine="google">Google</button>
+                <button class="individual-search" data-engine="perplexity">Perplexity</button>
+                <button class="individual-search" data-engine="genspark">GenSpark</button>
+                <button class="individual-search" data-engine="yahoo">Yahoo</button>
+                <button class="individual-search" data-engine="amazon">Amazon</button>
+                <button class="individual-search" data-engine="rakuten">楽天市場</button>
+                <button class="individual-search" data-engine="yahooShopping">Yahoo!ショッピング</button>
             </div>
-            <div class="options-group">
-                <h2>まとめて検索のオプション</h2>
-                <div id="engineOptions">
-                    <label><input type="checkbox" id="googleCheck" checked> Google</label>
-                    <label><input type="checkbox" id="perplexityCheck" checked> Perplexity</label>
-                    <label><input type="checkbox" id="genSparkCheck" checked> GenSpark</label>
-                    <label><input type="checkbox" id="yahooCheck"> Yahoo</label>
-                    <label><input type="checkbox" id="amazonCheck"> Amazon</label>
-                    <label><input type="checkbox" id="rakutenCheck"> 楽天市場</label>
-                    <label><input type="checkbox" id="yahooShoppingCheck"> Yahoo!ショッピング</label>
-                </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="googleCheck" checked> Google</label>
+                <label><input type="checkbox" id="perplexityCheck" checked> Perplexity</label>
+                <label><input type="checkbox" id="gensparkCheck" checked> GenSpark</label>
+                <label><input type="checkbox" id="yahooCheck" checked> Yahoo</label>
+                <label><input type="checkbox" id="amazonCheck" checked> Amazon</label>
+                <label><input type="checkbox" id="rakutenCheck" checked> 楽天市場</label>
+                <label><input type="checkbox" id="yahooShoppingCheck" checked> Yahoo!ショッピング</label>
             </div>
-            <div class="options-group">
-                <h2>その他オプション</h2>
-                <div id="otherOptions">
-                    <label><input type="checkbox" id="enterSearch" checked> エンターキーで検索</label>
-                    <label><input type="checkbox" id="recordHistory" checked> 検索履歴を記録する</label>
-                </div>
+            <div class="option-group">
+                <label><input type="checkbox" id="enterSearch" checked> エンターキーでの検索を有効にする</label>
+                <label><input type="checkbox" id="recordHistory" checked> 検索履歴を記録する</label>
             </div>
-            <div class="options-group">
-                <h2>関連リンク</h2>
-                <div class="link-group">
-                    <a href="https://gemini.google.com/app?hl=ja" target="_blank">Gemini</a>
-                    <a href="https://aistudio.google.com/app/prompts/new_chat" target="_blank">AI Studio</a>
-                    <a href="https://claude.ai/new" target="_blank">Claude</a>
-                    <a href="https://mapify.so/ja/app/new" target="_blank">Mapify</a>
-                </div>
+            <div class="link-group">
+                <a href="https://gemini.google.com/" target="_blank">Gemini</a>
+                <a href="https://www.ai-studio.com/" target="_blank">AI Studio</a>
+                <a href="https://www.anthropic.com/claude" target="_blank">Claude</a>
+                <a href="https://mapify.ai/" target="_blank">Mapify</a>
             </div>
-            <div id="message"></div>
         </div>
         <div class="history-panel">
             <h2>検索履歴</h2>
             <ul id="historyList"></ul>
-            <button id="clearHistoryButton">検索履歴をクリア</button>
+            <button id="clearHistory">履歴をクリア</button>
         </div>
     </div>
 
     <script>
-        // JavaScript code remains the same as in the previous version
-        // ... (insert the entire JavaScript code here)
+        // グローバル変数
+        const searchEngines = {
+            google: 'https://google.co.jp/search?q=%s',
+            perplexity: 'https://www.perplexity.ai/search/new?q=%s',
+            genspark: 'https://www.genspark.ai/search?query=%s',
+            yahoo: 'https://search.yahoo.co.jp/search?p=%s',
+            amazon: 'https://www.amazon.co.jp/s?k=%s',
+            rakuten: 'https://search.rakuten.co.jp/search/mall/%s/',
+            yahooShopping: 'https://shopping.yahoo.co.jp/search?p=%s'
+        };
+
+        // DOM要素の取得
+        const searchBox = document.getElementById('searchBox');
+        const searchAllButton = document.getElementById('searchAll');
+        const copySearchButton = document.getElementById('copySearch');
+        const clearSearchButton = document.getElementById('clearSearch');
+        const individualSearchButtons = document.querySelectorAll('.individual-search');
+        const engineCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+        const enterSearchCheckbox = document.getElementById('enterSearch');
+        const recordHistoryCheckbox = document.getElementById('recordHistory');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryButton = document.getElementById('clearHistory');
+
+        // 設定の読み込み
+        function loadSettings() {
+            engineCheckboxes.forEach(checkbox => {
+                const savedState = localStorage.getItem(checkbox.id);
+                if (savedState !== null) {
+                    checkbox.checked = savedState === 'true';
+                }
+            });
+
+            const savedEnterSearch = localStorage.getItem('enterSearch');
+            if (savedEnterSearch !== null) {
+                enterSearchCheckbox.checked = savedEnterSearch === 'true';
+            }
+
+            const savedRecordHistory = localStorage.getItem('recordHistory');
+            if (savedRecordHistory !== null) {
+                recordHistoryCheckbox.checked = savedRecordHistory === 'true';
+            }
+        }
+
+        // 設定の保存
+        function saveSettings() {
+            engineCheckboxes.forEach(checkbox => {
+                localStorage.setItem(checkbox.id, checkbox.checked);
+            });
+            localStorage.setItem('enterSearch', enterSearchCheckbox.checked);
+            localStorage.setItem('recordHistory', recordHistoryCheckbox.checked);
+        }
+
+        // 検索履歴の読み込み
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            updateHistoryList(history);
+        }
+
+        // 検索履歴の保存
+        function saveHistory(query) {
+            if (recordHistoryCheckbox.checked) {
+                let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+                history.unshift(query);
+                history = history.slice(0, 10); // 最新10件のみ保持
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+                updateHistoryList(history);
+            }
+        }
+
+        // 検索履歴リストの更新
+        function updateHistoryList(history) {
+            historyList.innerHTML = '';
+            history.forEach(query => {
+                const li = document.createElement('li');
+                li.textContent = query;
+                li.addEventListener('click', () => {
+                    searchBox.value = query;
+                });
+                historyList.appendChild(li);
+            });
+        }
+
+        // 検索実行関数
+        function performSearch(engine) {
+            const query = searchBox.value.trim();
+            if (query === '') {
+                alert('検索語句を入力してください。');
+                return;
+            }
+
+            let url = searchEngines[engine];
+            if (engine === 'amazon' || engine === 'rakuten') {
+                url = url.replace('%s', encodeURIComponent(query.replace(/\s+/g, '+')));
+            } else {
+                url = url.replace('%s', encodeURIComponent(query));
+            }
+
+            window.open(url, '_blank');
+            saveHistory(query);
+        }
+
+        // イベントリスナーの設定
+        searchAllButton.addEventListener('click', () => {
+            engineCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    performSearch(checkbox.id.replace('Check', '').toLowerCase());
+                }
+            });
+        });
+
+        copySearchButton.addEventListener('click', () => {
+            searchBox.select();
+            document.execCommand('copy');
+        });
+
+        clearSearchButton.addEventListener('click', () => {
+            searchBox.value = '';
+        });
+
+        individualSearchButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                performSearch(button.dataset.engine);
+            });
+        });
+
+        engineCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', saveSettings);
+        });
+
+        enterSearchCheckbox.addEventListener('change', saveSettings);
+        recordHistoryCheckbox.addEventListener('change', saveSettings);
+
+        searchBox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && enterSearchCheckbox.checked) {
+                searchAllButton.click();
+            }
+        });
+
+        clearHistoryButton.addEventListener('click', () => {
+            localStorage.removeItem('searchHistory');
+            historyList.innerHTML = '';
+        });
+
+        // 初期化
+        loadSettings();
+        loadHistory();
+
+        // ポップアップブロック警告
+        alert('複数のタブが開かれる場合があります。ポップアップブロックを無効にしてください。');
     </script>
 </body>
 </html>
