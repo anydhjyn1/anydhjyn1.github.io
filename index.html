@@ -196,7 +196,7 @@
             }
         }
 
-        // 検索履歴の保存（この関数を修正）
+        // 検索履歴の保存
         function saveHistory(query) {
             if (recordHistoryCheckbox.checked && query.trim() !== '') {
                 let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
@@ -209,7 +209,41 @@
             }
         }
 
-        // まとめて検索（この関数を修正）
+        // 検索履歴の表示
+        function updateHistoryList() {
+            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            historyList.innerHTML = '';
+            history.forEach(query => {
+                const li = document.createElement('li');
+                li.textContent = query;
+                li.addEventListener('click', () => {
+                    searchBox.value = query;
+                });
+                historyList.appendChild(li);
+            });
+        }
+
+        // 検索実行
+        function performSearch(engine) {
+            const query = searchBox.value.trim();
+            if (query === '') {
+                errorMessage.textContent = '検索語句を入力してください。';
+                return;
+            }
+            errorMessage.textContent = '';
+
+            let url;
+            if (engine === 'amazon' || engine === 'rakuten') {
+                // AmazonとRakutenの検索では空白を+に置換
+                url = searchEngines[engine].replace('%s', encodeURIComponent(query.replace(/\s+/g, '+')));
+            } else {
+                url = searchEngines[engine].replace('%s', encodeURIComponent(query));
+            }
+
+            window.open(url, '_blank');
+        }
+
+        // まとめて検索
         function performAllSearch() {
             const query = searchBox.value.trim();
             if (query === '') {
@@ -226,7 +260,10 @@
             saveHistory(query);
         }
 
-        // 個別検索ボタンのイベントリスナー（この部分を修正）
+        // まとめて検索ボタンのイベントリスナー
+        searchAllBtn.addEventListener('click', performAllSearch);
+
+        // 個別検索ボタンのイベントリスナー
         Object.keys(searchEngines).forEach(engine => {
             document.getElementById(`search${engine.charAt(0).toUpperCase() + engine.slice(1)}`).addEventListener('click', () => {
                 const query = searchBox.value.trim();
@@ -239,7 +276,18 @@
             });
         });
 
-        // エンターキーでの検索（この部分は前回の修正を維持）
+        // 検索語句のコピー
+        copySearchBtn.addEventListener('click', () => {
+            searchBox.select();
+            document.execCommand('copy');
+        });
+
+        // 検索語句のクリア
+        clearSearchBtn.addEventListener('click', () => {
+            searchBox.value = '';
+        });
+
+        // エンターキーでの検索
         searchBox.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
