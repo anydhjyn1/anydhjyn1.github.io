@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
     <style>
-        /* 以前のCSSスタイルをここに保持 */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -97,7 +96,6 @@
     </style>
 </head>
 <body>
-    <!-- 以前のHTML構造をここに保持 -->
     <div class="container">
         <div class="main-content">
             <h1>複数検索エンジン同時検索</h1>
@@ -286,7 +284,7 @@
 
         // エンターキーでの検索
         searchBox.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && enterSearchCheckbox.checked) {
+            if (e.key === 'Enter') {
                 e.preventDefault();
                 performAllSearch(); // エンターキーで"まとめて検索"を実行
             }
@@ -304,8 +302,13 @@
         });
 
         // 初期化
-        loadSettings();
-        updateHistoryList();
+        function initialize() {
+            loadSettings();
+            updateHistoryList();
+        }
+
+        // ページ読み込み時に初期化を実行
+        window.addEventListener('load', initialize);
     </script>
 </body>
 </html>
