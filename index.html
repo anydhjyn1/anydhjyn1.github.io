@@ -196,54 +196,20 @@
             }
         }
 
-        // 検索履歴の保存
+        // 検索履歴の保存（この関数を修正）
         function saveHistory(query) {
-            if (recordHistoryCheckbox.checked) {
+            if (recordHistoryCheckbox.checked && query.trim() !== '') {
                 let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-                if (!history.includes(query)) {
-                    history.unshift(query);
-                    history = history.slice(0, 10); // 最新10件のみ保持
-                    localStorage.setItem('searchHistory', JSON.stringify(history));
-                    updateHistoryList();
-                }
+                // 重複を避けるために、既存のクエリを削除
+                history = history.filter(item => item !== query);
+                history.unshift(query);
+                history = history.slice(0, 10); // 最新10件のみ保持
+                localStorage.setItem('searchHistory', JSON.stringify(history));
+                updateHistoryList();
             }
         }
 
-        // 検索履歴の表示
-        function updateHistoryList() {
-            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            historyList.innerHTML = '';
-            history.forEach(query => {
-                const li = document.createElement('li');
-                li.textContent = query;
-                li.addEventListener('click', () => {
-                    searchBox.value = query;
-                });
-                historyList.appendChild(li);
-            });
-        }
-
-        // 検索実行
-        function performSearch(engine) {
-            const query = searchBox.value.trim();
-            if (query === '') {
-                errorMessage.textContent = '検索語句を入力してください。';
-                return;
-            }
-            errorMessage.textContent = '';
-
-            let url;
-            if (engine === 'amazon' || engine === 'rakuten') {
-                // AmazonとRakutenの検索では空白を+に置換
-                url = searchEngines[engine].replace('%s', encodeURIComponent(query.replace(/\s+/g, '+')));
-            } else {
-                url = searchEngines[engine].replace('%s', encodeURIComponent(query));
-            }
-
-            window.open(url, '_blank');
-        }
-
-        // まとめて検索
+        // まとめて検索（この関数を修正）
         function performAllSearch() {
             const query = searchBox.value.trim();
             if (query === '') {
@@ -256,33 +222,24 @@
                 performSearch(checkbox.value);
             });
 
-            // まとめて検索時に1回だけ履歴を保存
+            // まとめて検索時に履歴を保存
             saveHistory(query);
         }
 
-        // まとめて検索ボタンのイベントリスナー
-        searchAllBtn.addEventListener('click', performAllSearch);
-
-        // 個別検索ボタンのイベントリスナー
+        // 個別検索ボタンのイベントリスナー（この部分を修正）
         Object.keys(searchEngines).forEach(engine => {
             document.getElementById(`search${engine.charAt(0).toUpperCase() + engine.slice(1)}`).addEventListener('click', () => {
-                performSearch(engine);
-                saveHistory(searchBox.value.trim()); // 個別検索時にも履歴を保存
+                const query = searchBox.value.trim();
+                if (query !== '') {
+                    performSearch(engine);
+                    saveHistory(query); // 個別検索時にも履歴を保存
+                } else {
+                    errorMessage.textContent = '検索語句を入力してください。';
+                }
             });
         });
 
-        // 検索語句のコピー
-        copySearchBtn.addEventListener('click', () => {
-            searchBox.select();
-            document.execCommand('copy');
-        });
-
-        // 検索語句のクリア
-        clearSearchBtn.addEventListener('click', () => {
-            searchBox.value = '';
-        });
-
-        // エンターキーでの検索（この部分を修正）
+        // エンターキーでの検索（この部分は前回の修正を維持）
         searchBox.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
