@@ -5,152 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5a623;
-            --background-color: #f0f4f8;
-            --text-color: #333;
-            --border-color: #ddd;
-        }
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .main-content {
-            flex: 1 1 70%;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-right: 20px;
-        }
-        .history-panel {
-            flex: 1 1 25%;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1, h2 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        #searchBox {
-            width: 100%;
-            height: 100px;
-            margin: 20px 0;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-        }
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #3a7bc8;
-        }
-        #individualSearchButtons button {
-            background-color: var(--secondary-color);
-        }
-        #individualSearchButtons button:hover {
-            background-color: #e09615;
-        }
-        .options-group {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .options-group label {
-            display: inline-block;
-            margin: 5px 10px;
-        }
-        .link-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .link-group a {
-            color: var(--primary-color);
-            text-decoration: none;
-            padding: 5px 10px;
-            border: 1px solid var(--primary-color);
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        .link-group a:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        #message {
-            margin-top: 20px;
-            color: #d9534f;
-            font-weight: bold;
-        }
-        #historyList {
-            list-style-type: none;
-            padding: 0;
-        }
-        #historyList li {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        #historyList li:hover {
-            background-color: #e9ecef;
-        }
-        .history-item-query {
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        .history-item-date {
-            font-size: 0.8em;
-            color: #666;
-        }
-        #clearHistoryButton {
-            margin-top: 10px;
-            background-color: #d9534f;
-        }
-        #clearHistoryButton:hover {
-            background-color: #c9302c;
-        }
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .main-content, .history-panel {
-                flex: 1 1 100%;
-                margin-right: 0;
-                margin-bottom: 20px;
-            }
-        }
+        /* 前回のCSSコードをここに貼り付けてください */
     </style>
 </head>
 <body>
@@ -210,8 +65,200 @@
     </div>
 
     <script>
-        // JavaScript code remains the same as in the previous version
-        // ... (insert the entire JavaScript code here)
+        // DOM要素の取得
+        const searchBox = document.getElementById('searchBox');
+        const searchButton = document.getElementById('searchButton');
+        const copyButton = document.getElementById('copyButton');
+        const clearButton = document.getElementById('clearButton');
+        const messageDiv = document.getElementById('message');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryButton = document.getElementById('clearHistoryButton');
+        const engineCheckboxes = {
+            google: document.getElementById('googleCheck'),
+            perplexity: document.getElementById('perplexityCheck'),
+            genSpark: document.getElementById('genSparkCheck'),
+            yahoo: document.getElementById('yahooCheck'),
+            amazon: document.getElementById('amazonCheck'),
+            rakuten: document.getElementById('rakutenCheck'),
+            yahooShopping: document.getElementById('yahooShoppingCheck')
+        };
+        const enterSearchCheckbox = document.getElementById('enterSearch');
+        const recordHistoryCheckbox = document.getElementById('recordHistory');
+        const individualSearchButtons = document.querySelectorAll('#individualSearchButtons button');
+
+        // 検索エンジンのURL
+        const searchEngines = {
+            google: 'https://google.co.jp/search?q=%s',
+            perplexity: 'https://www.perplexity.ai/search/new?q=%s',
+            genSpark: 'https://www.genspark.ai/search?query=%s',
+            yahoo: 'https://search.yahoo.co.jp/search?p=%s',
+            amazon: 'https://www.amazon.co.jp/s?k=%s',
+            rakuten: 'https://search.rakuten.co.jp/search/mall/%s/',
+            yahooShopping: 'https://shopping.yahoo.co.jp/search?p=%s'
+        };
+
+        // 特殊なエンコーディングが必要な検索エンジン
+        const specialEncodingEngines = ['amazon', 'rakuten'];
+
+        // 設定の保存
+        function saveSettings() {
+            const settings = {
+                engines: Object.fromEntries(Object.entries(engineCheckboxes).map(([key, checkbox]) => [key, checkbox.checked])),
+                enterSearch: enterSearchCheckbox.checked,
+                recordHistory: recordHistoryCheckbox.checked
+            };
+            try {
+                localStorage.setItem('searchSettings', JSON.stringify(settings));
+            } catch (error) {
+                console.error('設定の保存に失敗しました:', error);
+            }
+        }
+
+        // 設定の復元
+        function loadSettings() {
+            try {
+                const settings = JSON.parse(localStorage.getItem('searchSettings'));
+                if (settings) {
+                    Object.entries(settings.engines).forEach(([key, value]) => {
+                        if (engineCheckboxes[key]) {
+                            engineCheckboxes[key].checked = value;
+                        }
+                    });
+                    enterSearchCheckbox.checked = settings.enterSearch;
+                    recordHistoryCheckbox.checked = settings.recordHistory !== undefined ? settings.recordHistory : true;
+                }
+            } catch (error) {
+                console.error('設定の復元に失敗しました:', error);
+            }
+        }
+
+        // 特殊なエンコーディング処理
+        function specialEncode(query) {
+            return query.split(' ').map(encodeURIComponent).join('+');
+        }
+
+        // 検索履歴の保存
+        function saveSearchHistory(query) {
+            if (!recordHistoryCheckbox.checked) return;
+            
+            let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            history.unshift({ query, date: new Date().toISOString() });
+            history = history.slice(0, 10); // 最新の10件のみ保持
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+            updateHistoryDisplay();
+        }
+
+        // 検索履歴の表示更新
+        function updateHistoryDisplay() {
+            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            historyList.innerHTML = '';
+            history.forEach(item => {
+                const li = document.createElement('li');
+                const truncatedQuery = item.query.length > 20 ? item.query.substring(0, 20) + '...' : item.query;
+                li.innerHTML = `
+                    <span class="history-item-query">${truncatedQuery}</span><br>
+                    <span class="history-item-date">${new Date(item.date).toLocaleString()}</span>
+                `;
+                li.title = item.query;
+                li.addEventListener('click', () => {
+                    searchBox.value = item.query;
+                });
+                historyList.appendChild(li);
+            });
+        }
+
+        // 検索履歴のクリア
+        function clearSearchHistory() {
+            localStorage.removeItem('searchHistory');
+            updateHistoryDisplay();
+            messageDiv.textContent = '検索履歴をクリアしました。';
+        }
+
+        // 単一の検索エンジンで検索を実行
+        function performSingleSearch(engine) {
+            const query = searchBox.value.trim();
+            if (!query) {
+                messageDiv.textContent = '検索語句を入力してください。';
+                return;
+            }
+
+            let encodedQuery = specialEncodingEngines.includes(engine) ? specialEncode(query) : encodeURIComponent(query);
+            const url = searchEngines[engine].replace('%s', encodedQuery);
+            window.open(url, '_blank');
+            saveSearchHistory(query);
+        }
+
+        // 複数の検索エンジンで検索を実行
+        function performMultiSearch() {
+            const query = searchBox.value.trim();
+            if (!query) {
+                messageDiv.textContent = '検索語句を入力してください。';
+                return;
+            }
+
+            let openedWindows = 0;
+            Object.entries(engineCheckboxes).forEach(([engine, checkbox], index) => {
+                if (checkbox.checked) {
+                    setTimeout(() => {
+                        let encodedQuery = specialEncodingEngines.includes(engine) ? specialEncode(query) : encodeURIComponent(query);
+                        const url = searchEngines[engine].replace('%s', encodedQuery);
+                        const newWindow = window.open(url, '_blank');
+                        if (newWindow) {
+                            openedWindows++;
+                        }
+                    }, index * 100);
+                }
+            });
+
+            setTimeout(() => {
+                if (openedWindows === 0) {
+                    messageDiv.textContent = 'ポップアップがブロックされました。ブラウザの設定を確認してください。';
+                } else {
+                    messageDiv.textContent = '';
+                    saveSettings();
+                    saveSearchHistory(query);
+                }
+            }, Object.keys(engineCheckboxes).length * 100);
+        }
+
+        // 検索語句のクリア
+        function clearSearchBox() {
+            searchBox.value = '';
+            messageDiv.textContent = '';
+        }
+
+        // イベントリスナーの設定
+        searchButton.addEventListener('click', performMultiSearch);
+        copyButton.addEventListener('click', () => {
+            searchBox.select();
+            document.execCommand('copy');
+            messageDiv.textContent = '検索語句をコピーしました。';
+        });
+        clearButton.addEventListener('click', clearSearchBox);
+        clearHistoryButton.addEventListener('click', clearSearchHistory);
+        searchBox.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && enterSearchCheckbox.checked) {
+                e.preventDefault();
+                performMultiSearch();
+            }
+        });
+        Object.values(engineCheckboxes).forEach(checkbox => {
+            checkbox.addEventListener('change', saveSettings);
+        });
+        enterSearchCheckbox.addEventListener('change', saveSettings);
+        recordHistoryCheckbox.addEventListener('change', saveSettings);
+
+        // 個別の検索ボタンにイベントリスナーを設定
+        individualSearchButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                performSingleSearch(button.dataset.engine);
+            });
+        });
+
+        // 初期化
+        loadSettings();
+        updateHistoryDisplay();
+        messageDiv.textContent = 'ポップアップを許可してください。';
     </script>
 </body>
 </html>
