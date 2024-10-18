@@ -282,9 +282,9 @@
             searchBox.value = '';
         });
 
-        // エンターキーでの検索
-        searchBox.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        // エンターキーでの検索（この部分を修正）
+        searchBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 performAllSearch(); // エンターキーで"まとめて検索"を実行
             }
