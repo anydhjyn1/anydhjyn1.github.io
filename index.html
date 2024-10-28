@@ -32,6 +32,17 @@
             border-top: 1px solid #ccc;
             padding-top: 20px;
         }
+        #historyList li {
+            cursor: pointer;
+            padding: 5px;
+        }
+        #historyList li:hover {
+            background-color: #f0f0f0;
+        }
+        #message {
+            color: green;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -94,79 +105,135 @@
     </div>
 
     <script>
+        // 設定の保存と読み込みの関数
+        function saveSettings() {
+            const settings = {
+                engines: {
+                    google: document.getElementById('google').checked,
+                    perplexity: document.getElementById('perplexity').checked,
+                    genspark: document.getElementById('genspark').checked,
+                    yahoo: document.getElementById('yahoo').checked,
+                    amazon: document.getElementById('amazon').checked,
+                    rakuten: document.getElementById('rakuten').checked,
+                    yahooShopping: document.getElementById('yahooShopping').checked,
+                    yahooAuctions: document.getElementById('yahooAuctions').checked,
+                    mercari: document.getElementById('mercari').checked
+                },
+                options: {
+                    enterToSearch: document.getElementById('enterToSearch').checked,
+                    recordHistory: document.getElementById('recordHistory').checked
+                }
+            };
+            localStorage.setItem('searchSettings', JSON.stringify(settings));
+        }
+
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('searchSettings'));
+            if (settings) {
+                // エンジンの設定を復元
+                Object.keys(settings.engines).forEach(engine => {
+                    const checkbox = document.getElementById(engine);
+                    if (checkbox) {
+                        checkbox.checked = settings.engines[engine];
+                    }
+                });
+
+                // その他のオプションを復元
+                document.getElementById('enterToSearch').checked = settings.options.enterToSearch;
+                document.getElementById('recordHistory').checked = settings.options.recordHistory;
+            }
+        }
+
+        // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
             const searchQuery = document.getElementById('searchQuery');
             const searchAllButton = document.getElementById('searchAll');
             const copyQueryButton = document.getElementById('copyQuery');
             const clearQueryButton = document.getElementById('clearQuery');
             const clearHistoryButton = document.getElementById('clearHistory');
-            const messageDiv = document.getElementById('message');
-            const historyList = document.getElementById('historyList');
 
+            // 設定とチェックボックスの変更イベントリスナーを設定
+            const checkboxes = document.querySelectorAll('#engineOptions input[type="checkbox"], #otherOptions input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', saveSettings);
+            });
+
+            // ボタンのイベントリスナーを設定
             searchAllButton.addEventListener('click', searchAll);
             copyQueryButton.addEventListener('click', copyQuery);
             clearQueryButton.addEventListener('click', clearQuery);
             clearHistoryButton.addEventListener('click', clearHistory);
 
+            // エンターキーでの検索
             searchQuery.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter' && document.getElementById('enterToSearch').checked) {
                     searchAll();
                 }
             });
 
+            // 設定と履歴を読み込み
+            loadSettings();
             loadHistory();
         });
 
+        function getAISearchQuery(query) {
+            return `${query} を含むラインナップ、類似商品、各価格を教えてください`;
+        }
+
         function search(engine) {
-            const query = document.getElementById('searchQuery').value.replace(/ /g, '+');
+            const baseQuery = document.getElementById('searchQuery').value.replace(/ /g, '+');
             let url;
             switch(engine) {
                 case 'google':
-                    url = `https://www.google.com/search?q=${query}`;
+                    url = `https://www.google.com/search?q=${baseQuery}`;
                     break;
                 case 'perplexity':
-                    url = `https://www.perplexity.ai/search?q=${query}`;
+                    const perplexityQuery = getAISearchQuery(baseQuery);
+                    url = `https://www.perplexity.ai/search?q=${perplexityQuery}`;
                     break;
                 case 'genspark':
-                    url = `https://www.genspark.ai/search?q=${query}`;
+                    const gensparkQuery = getAISearchQuery(baseQuery);
+                    url = `https://www.genspark.ai/search?query=${gensparkQuery}`;
                     break;
                 case 'yahoo':
-                    url = `https://search.yahoo.co.jp/search?p=${query}`;
+                    url = `https://search.yahoo.co.jp/search?p=${baseQuery}`;
                     break;
                 case 'amazon':
-                    url = `https://www.amazon.co.jp/s?k=${query}`;
+                    url = `https://www.amazon.co.jp/s?k=${baseQuery}`;
                     break;
                 case 'rakuten':
-                    url = `https://search.rakuten.co.jp/search/mall/${query}`;
+                    url = `https://search.rakuten.co.jp/search/mall/${baseQuery}`;
                     break;
                 case 'yahooShopping':
-                    url = `https://shopping.yahoo.co.jp/search?p=${query}`;
+                    url = `https://shopping.yahoo.co.jp/search?p=${baseQuery}`;
                     break;
                 case 'yahooAuctions':
-                    url = `https://auctions.yahoo.co.jp/search/search?p=${query}`;
+                    url = `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`;
                     break;
                 case 'mercari':
-                    url = `https://www.mercari.com/jp/search/?keyword=${query}`;
+                    url = `https://www.mercari.com/jp/search/?keyword=${baseQuery}`;
                     break;
             }
             window.open(url, '_blank');
             if (document.getElementById('recordHistory').checked) {
-                addToHistory(query);
+                addToHistory(baseQuery);
             }
+            saveSettings(); // 検索時に設定を保存
         }
 
         function searchAll() {
-            const query = document.getElementById('searchQuery').value.replace(/ /g, '+');
+            const baseQuery = document.getElementById('searchQuery').value.replace(/ /g, '+');
+            const aiQuery = getAISearchQuery(baseQuery);
             const engines = [
-                {id: 'google', url: `https://www.google.com/search?q=${query}`},
-                {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${query}`},
-                {id: 'genspark', url: `https://www.genspark.ai/search?q=${query}`},
-                {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${query}`},
-                {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${query}`},
-                {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${query}`},
-                {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${query}`},
-                {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${query}`},
-                {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${query}`}
+                {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
+                {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
+                {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
+                {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
+                {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
+                {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
+                {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
+                {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
+                {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`}
             ];
 
             engines.forEach(engine => {
@@ -176,8 +243,9 @@
             });
 
             if (document.getElementById('recordHistory').checked) {
-                addToHistory(query);
+                addToHistory(baseQuery);
             }
+            saveSettings(); // まとめて検索時に設定を保存
         }
 
         function copyQuery() {
