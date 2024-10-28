@@ -284,7 +284,20 @@
                 const li = document.createElement('li');
                 li.textContent = query;
                 li.addEventListener('click', () => {
-                    document.getElementById('searchQuery').value = query;
+                    // 既存の検索語句を取得
+                    const searchBox = document.getElementById('searchQuery');
+                    const currentQuery = searchBox.value;
+                    
+                    // 既存の検索語句があれば、スペースを追加して結合
+                    if (currentQuery) {
+                        searchBox.value = currentQuery + ' ' + query;
+                    } else {
+                        searchBox.value = query;
+                    }
+                    
+                    // カーソルを文末に移動
+                    searchBox.focus();
+                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
                 });
                 historyList.appendChild(li);
             });
