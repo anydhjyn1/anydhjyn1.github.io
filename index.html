@@ -4,147 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>複数検索エンジン同時検索</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #searchQuery {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+        }
+        #engineOptions label, #otherOptions label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #links a {
+            margin-right: 10px;
+        }
+        #history-panel {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        #historyList li {
+            cursor: pointer;
+            padding: 5px;
+        }
+        #historyList li:hover {
+            background-color: #f0f0f0;
+        }
+        #message {
+            color: green;
+            margin: 10px 0;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
+<body>
     <div id="main-content">
-        <h1 style="font-size: 24px; margin-bottom: 20px;">
-            複数検索エンジン同時検索
-            <a href="https://github.com/anydhjyn1/anydhjyn1.github.io/edit/main/index.html" 
-               target="_blank" 
-               style="font-size: 14px; margin-left: 10px; text-decoration: none; color: #666;">
-                [Edit]
-            </a>
-        </h1>
+        <h1>複数検索エンジン同時検索</h1>
 
-        <input 
-            type="text" 
-            id="searchQuery" 
-            placeholder="検索語句を入力してください"
-            style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"
-        >
+        <input type="text" id="searchQuery" placeholder="検索語句を入力してください">
 
-        <div id="mainButtons" style="margin-bottom: 15px;">
-            <button 
-                id="searchAll" 
-                style="padding: 10px; margin: 5px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;"
-            >まとめて検索</button>
-            <button 
-                id="copyQuery"
-                style="padding: 10px; margin: 5px; background-color: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer;"
-            >検索語句のコピー</button>
-            <button 
-                id="clearQuery"
-                style="padding: 10px; margin: 5px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;"
-            >検索語句のクリア</button>
+        <div id="mainButtons">
+            <button id="searchAll">まとめて検索</button>
+            <button id="copyQuery">検索語句のコピー</button>
+            <button id="clearQuery">検索語句のクリア</button>
         </div>
 
-        <div id="individualSearchButtons" style="margin-bottom: 20px;">
-            <button onclick="search('google')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">Googleで検索</button>
-            <button onclick="search('perplexity')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">Perplexityで検索</button>
-            <button onclick="search('genspark')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">GenSparkで検索</button>
-            <button onclick="search('yahoo')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">Yahooで検索</button>
-            <button onclick="search('amazon')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">Amazonで検索</button>
-            <button onclick="search('rakuten')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">楽天市場で検索</button>
-            <button onclick="search('yahooShopping')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">Yahoo!ショッピングで検索</button>
-            <button onclick="search('yahooAuctions')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">ヤフオクで検索</button>
-            <button onclick="search('mercari')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">メルカリで検索</button>
-            <button onclick="search('surugaya')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">駿河屋で検索</button>
-            <button onclick="search('netoff')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">ネットオフで検索</button>
-            <button onclick="search('bookoff')" style="padding: 8px; margin: 3px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">ブックオフで検索</button>
+        <div id="individualSearchButtons">
+            <button onclick="search('google')">Googleで検索</button>
+            <button onclick="search('perplexity')">Perplexityで検索</button>
+            <button onclick="search('genspark')">GenSparkで検索</button>
+            <button onclick="search('yahoo')">Yahooで検索</button>
+            <button onclick="search('amazon')">Amazonで検索</button>
+            <button onclick="search('rakuten')">楽天市場で検索</button>
+            <button onclick="search('yahooShopping')">Yahoo!ショッピングで検索</button>
+            <button onclick="search('yahooAuctions')">ヤフオクで検索</button>
+            <button onclick="search('mercari')">メルカリで検索</button>
+            <button onclick="search('surugaya')">駿河屋で検索</button>
+            <button onclick="search('netoff')">ネットオフで検索</button>
+            <button onclick="search('bookoff')">ブックオフで検索</button>
         </div>
 
-        <h2 style="font-size: 20px; margin: 20px 0;">まとめて検索のオプション</h2>
-        <div id="engineOptions" style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="google" checked> 
-                <a href="https://google.co.jp" target="_blank" style="text-decoration: none; color: #2196F3;">Google</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="perplexity" checked> 
-                <a href="https://www.perplexity.ai" target="_blank" style="text-decoration: none; color: #2196F3;">Perplexity</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="genspark" checked> 
-                <a href="https://www.genspark.ai" target="_blank" style="text-decoration: none; color: #2196F3;">GenSpark</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="yahoo" checked> 
-                <a href="https://search.yahoo.co.jp" target="_blank" style="text-decoration: none; color: #2196F3;">Yahoo</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="amazon" checked> 
-                <a href="https://www.amazon.co.jp" target="_blank" style="text-decoration: none; color: #2196F3;">Amazon</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="rakuten" checked> 
-                <a href="https://www.rakuten.co.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">楽天市場</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="yahooShopping" checked> 
-                <a href="https://shopping.yahoo.co.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">Yahoo!ショッピング</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="yahooAuctions" checked> 
-                <a href="https://auctions.yahoo.co.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">ヤフオク</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="mercari" checked> 
-                <a href="https://www.mercari.com/jp/" target="_blank" style="text-decoration: none; color: #2196F3;">メルカリ</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="surugaya" checked> 
-                <a href="https://www.suruga-ya.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">駿河屋</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="netoff" checked> 
-                <a href="https://www.netoff.co.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">ネットオフ</a>
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="bookoff" checked> 
-                <a href="https://shopping.bookoff.co.jp/" target="_blank" style="text-decoration: none; color: #2196F3;">ブックオフ</a>
-            </label>
+        <h2>まとめて検索のオプション</h2>
+        <div id="engineOptions">
+            <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
+            <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
+            <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+            <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
+            <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
+            <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
+            <label><input type="checkbox" id="yahooShopping" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
+            <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
+            <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+            <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+            <label><input type="checkbox" id="netoff" checked> <a href="https://www.netoff.co.jp/" target="_blank">ネットオフ</a></label>
+            <label><input type="checkbox" id="bookoff" checked> <a href="https://shopping.bookoff.co.jp/" target="_blank">ブックオフ</a></label>
         </div>
 
-        <h2 style="font-size: 20px; margin: 20px 0;">その他オプション</h2>
-        <div id="otherOptions" style="margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="enterToSearch" checked> エンターキーで検索
-            </label>
-            <label style="display: block; margin-bottom: 8px;">
-                <input type="checkbox" id="recordHistory" checked> 検索履歴を記録する
-            </label>
+        <h2>その他オプション</h2>
+        <div id="otherOptions">
+            <label><input type="checkbox" id="enterToSearch" checked> エンターキーで検索</label>
+            <label><input type="checkbox" id="recordHistory" checked> 検索履歴を記録する</label>
         </div>
 
-        <div id="links" style="margin: 20px 0;">
-            <a href="https://gemini.google.com/app?hl=ja" target="_blank" style="margin-right: 15px; text-decoration: none; color: #2196F3;">Gemini</a>
-            <a href="https://aistudio.google.com/app/prompts/new_chat" target="_blank" style="margin-right: 15px; text-decoration: none; color: #2196F3;">AI Studio</a>
-            <a href="https://claude.ai/new" target="_blank" style="margin-right: 15px; text-decoration: none; color: #2196F3;">Claude</a>
-            <a href="https://mapify.so/ja/app/new" target="_blank" style="margin-right: 15px; text-decoration: none; color: #2196F3;">Mapify</a>
+        <div id="links">
+            <a href="https://gemini.google.com/app?hl=ja" target="_blank">Gemini</a>
+            <a href="https://aistudio.google.com/app/prompts/new_chat" target="_blank">AI Studio</a>
+            <a href="https://claude.ai/new" target="_blank">Claude</a>
+            <a href="https://mapify.so/ja/app/new" target="_blank">Mapify</a>
+            <a href="https://github.com/anydhjyn1/anydhjyn1.github.io/edit/main/index.html" target="_blank">メンテナンス</a>
         </div>
 
-        <div id="message" style="color: green; margin: 10px 0; min-height: 20px;"></div>
+        <div id="message"></div>
     </div>
 
-    <div id="history-panel" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px;">
-        <h2 style="font-size: 20px; margin-bottom: 15px;">検索履歴</h2>
-        <button 
-            id="clearHistory"
-            style="padding: 8px; margin-bottom: 10px; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;"
-        >検索履歴をクリア</button>
-        <ul id="historyList" style="list-style: none; padding: 0; margin: 0;">
-            <!-- 履歴項目はJavaScriptで動的に追加されます -->
-        </ul>
+    <div id="history-panel">
+        <h2>検索履歴</h2>
+        <button id="clearHistory">検索履歴をクリア</button>
+        <ul id="historyList"></ul>
     </div>
 
     <script>
-        function replaceSpacesToPlus(query) {
-            return query.replace(/ |　/g, '+');  // 半角スペースと全角スペースを+に置換
-        }
-
-        function getAISearchQuery(query) {
-            return `${query} について、特徴と価格を教えてください。`;
-        }
-
         function saveSettings() {
             const settings = {
                 engines: {
@@ -172,21 +139,17 @@
         function loadSettings() {
             const settings = JSON.parse(localStorage.getItem('searchSettings'));
             if (settings) {
-                // エンジンの設定を復元
                 Object.keys(settings.engines).forEach(engine => {
                     const checkbox = document.getElementById(engine);
                     if (checkbox) {
                         checkbox.checked = settings.engines[engine];
                     }
                 });
-
-                // その他のオプションを復元
                 document.getElementById('enterToSearch').checked = settings.options.enterToSearch;
                 document.getElementById('recordHistory').checked = settings.options.recordHistory;
             }
         }
 
-        // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
             const searchQuery = document.getElementById('searchQuery');
             const searchAllButton = document.getElementById('searchAll');
@@ -194,32 +157,32 @@
             const clearQueryButton = document.getElementById('clearQuery');
             const clearHistoryButton = document.getElementById('clearHistory');
 
-            // 設定とチェックボックスの変更イベントリスナーを設定
             const checkboxes = document.querySelectorAll('#engineOptions input[type="checkbox"], #otherOptions input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', saveSettings);
             });
 
-            // ボタンのイベントリスナーを設定
             searchAllButton.addEventListener('click', searchAll);
             copyQueryButton.addEventListener('click', copyQuery);
             clearQueryButton.addEventListener('click', clearQuery);
             clearHistoryButton.addEventListener('click', clearHistory);
 
-            // エンターキーでの検索
             searchQuery.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter' && document.getElementById('enterToSearch').checked) {
                     searchAll();
                 }
             });
 
-            // 設定と履歴を読み込み
             loadSettings();
             loadHistory();
         });
 
+        function getAISearchQuery(query) {
+            return `${query} について、特徴と価格を教えてください。`;
+        }
+
         function search(engine) {
-            const baseQuery = replaceSpacesToPlus(document.getElementById('searchQuery').value);
+            const baseQuery = document.getElementById('searchQuery').value.replace(/[ 　]/g, '+');
             let url;
             switch(engine) {
                 case 'google':
@@ -269,7 +232,7 @@
         }
 
         function searchAll() {
-            const baseQuery = replaceSpacesToPlus(document.getElementById('searchQuery').value);
+            const baseQuery = document.getElementById('searchQuery').value.replace(/[ 　]/g, '+');
             const aiQuery = getAISearchQuery(baseQuery);
             const engines = [
                 {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
@@ -321,7 +284,7 @@
         function addToHistory(query) {
             let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
             history.unshift(query);
-            history = history.slice(0, 10); // 最新の10件のみ保持
+            history = history.slice(0, 10);
             localStorage.setItem('searchHistory', JSON.stringify(history));
             loadHistory();
         }
@@ -333,28 +296,14 @@
             history.forEach(query => {
                 const li = document.createElement('li');
                 li.textContent = query;
-                li.style.cursor = 'pointer';
-                li.style.padding = '5px';
-                li.style.borderBottom = '1px solid #eee';
-                li.addEventListener('mouseover', function() {
-                    this.style.backgroundColor = '#f0f0f0';
-                });
-                li.addEventListener('mouseout', function() {
-                    this.style.backgroundColor = 'transparent';
-                });
                 li.addEventListener('click', () => {
-                    // 既存の検索語句を取得
                     const searchBox = document.getElementById('searchQuery');
                     const currentQuery = searchBox.value;
-                    
-                    // 既存の検索語句があれば、スペースを追加して結合
                     if (currentQuery) {
                         searchBox.value = currentQuery + ' ' + query;
                     } else {
                         searchBox.value = query;
                     }
-                    
-                    // カーソルを文末に移動
                     searchBox.focus();
                     searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
                 });
@@ -369,4 +318,3 @@
         }
     </script>
 </body>
-</html>
