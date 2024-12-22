@@ -65,6 +65,7 @@
             <button onclick="search('google')">Googleで検索</button>
             <button onclick="search('perplexity')">Perplexityで検索</button>
             <button onclick="search('genspark')">GenSparkで検索</button>
+            <button onclick="search('felo')">Feloで検索</button>
             <button onclick="search('yahoo')">Yahooで検索</button>
             <button onclick="search('amazon')">Amazonで検索</button>
             <button onclick="search('rakuten')">楽天市場で検索</button>
@@ -79,6 +80,7 @@
             <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
             <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
             <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+            <label><input type="checkbox" id="felo" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
             <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
             <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
             <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
@@ -122,6 +124,7 @@
                     google: document.getElementById('google').checked,
                     perplexity: document.getElementById('perplexity').checked,
                     genspark: document.getElementById('genspark').checked,
+                    felo: document.getElementById('felo').checked,
                     yahoo: document.getElementById('yahoo').checked,
                     amazon: document.getElementById('amazon').checked,
                     rakuten: document.getElementById('rakuten').checked,
@@ -211,6 +214,10 @@
                     const gensparkQuery = getAISearchQuery(baseQuery);
                     url = `https://www.genspark.ai/search?query=${gensparkQuery}`;
                     break;
+                case 'felo':
+                    const feloQuery = getAISearchQuery(baseQuery);
+                    url = `https://felo.ai/search?q=${feloQuery}`;
+                    break;
                 case 'yahoo':
                     url = `https://search.yahoo.co.jp/search?p=${baseQuery}`;
                     break;
@@ -247,6 +254,7 @@
                 {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
                 {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
                 {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
+                {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
                 {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
                 {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
                 {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
@@ -297,37 +305,37 @@
         }
 
         function loadHistory() {
-            const historyList = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            historyList.innerHTML = '';
-            history.forEach(query => {
-                const li = document.createElement('li');
-                li.textContent = query;
-                li.addEventListener('click', () => {
-                    // 既存の検索語句を取得
-                    const searchBox = document.getElementById('searchQuery');
-                    const currentQuery = searchBox.value;
-                    
-                    // 既存の検索語句があれば、スペースを追加して結合
-                    if (currentQuery) {
-                        searchBox.value = currentQuery + ' ' + query;
-                    } else {
-                        searchBox.value = query;
-                    }
-                    
-                    // カーソルを文末に移動
-                    searchBox.focus();
-                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-                });
-                historyList.appendChild(li);
-            });
-        }
+    const historyList = document.getElementById('historyList');
+    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+    historyList.innerHTML = '';
+    history.forEach(query => {
+        const li = document.createElement('li');
+        li.textContent = query;
+        li.addEventListener('click', () => {
+            // 既存の検索語句を取得
+            const searchBox = document.getElementById('searchQuery');
+            const currentQuery = searchBox.value;
+            
+            // 既存の検索語句があれば、スペースを追加して結合
+            if (currentQuery) {
+                searchBox.value = currentQuery + ' ' + query;
+            } else {
+                searchBox.value = query;
+            }
+            
+            // カーソルを文末に移動
+            searchBox.focus();
+            searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+        });
+        historyList.appendChild(li);
+    });
+}
 
-        function clearHistory() {
-            localStorage.removeItem('searchHistory');
-            loadHistory();
-            showMessage('検索履歴をクリアしました。');
-        }
-    </script>
+function clearHistory() {
+    localStorage.removeItem('searchHistory');
+    loadHistory();
+    showMessage('検索履歴をクリアしました。');
+}
+</script>
 </body>
 </html>
