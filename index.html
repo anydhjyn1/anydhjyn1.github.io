@@ -73,6 +73,9 @@
             <button onclick="search('yahooAuctions')">ヤフオクで検索</button>
             <button onclick="search('mercari')">メルカリで検索</button>
             <button onclick="search('surugaya')">駿河屋で検索</button>
+            <button onclick="search('saiyasune')">最安値.comで検索</button>
+            <button onclick="search('qoo10')">Qoo10で検索</button>
+            <button onclick="search('dshopping')">dショッピングで検索</button>
         </div>
 
         <h2>まとめて検索のオプション</h2>
@@ -88,6 +91,9 @@
             <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
             <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
             <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+            <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+            <label><input type="checkbox" id="qoo10" checked> <a href="https://www.qoo10.jp/" target="_blank">Qoo10</a></label>
+            <label><input type="checkbox" id="dshopping" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
         </div>
 
         <h2>その他オプション</h2>
@@ -131,7 +137,10 @@
                     yahooShopping: document.getElementById('yahooShopping').checked,
                     yahooAuctions: document.getElementById('yahooAuctions').checked,
                     mercari: document.getElementById('mercari').checked,
-                    surugaya: document.getElementById('surugaya').checked
+                    surugaya: document.getElementById('surugaya').checked,
+                    saiyasune: document.getElementById('saiyasune').checked,
+                    qoo10: document.getElementById('qoo10').checked,
+                    dshopping: document.getElementById('dshopping').checked
                 },
                 options: {
                     enterToSearch: document.getElementById('enterToSearch').checked,
@@ -230,6 +239,15 @@
                 case 'surugaya':
                     url = `https://www.suruga-ya.jp/search?search_word=${baseQuery}`;
                     break;
+                case 'saiyasune':
+                    url = `https://www.saiyasune.com/I1W${baseQuery}.html`;
+                    break;
+                case 'qoo10':
+                    url = `https://www.qoo10.jp/s/${baseQuery}`;
+                    break;
+                case 'dshopping':
+                    url = `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`;
+                    break;
             }
             window.open(url, '_blank');
             if (document.getElementById('recordHistory').checked) {
@@ -252,7 +270,10 @@
                 {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
                 {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
                 {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
-                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`}
+                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
+                {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`},
+                {id: 'qoo10', url: `https://www.qoo10.jp/s/${baseQuery}`},
+                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`}
             ];
 
             engines.forEach(engine => {
@@ -274,56 +295,56 @@
             showMessage('検索語句をクリップボードにコピーしました。');
         }
 
-        function clearQuery() {
-            document.getElementById('searchQuery').value = '';
-            showMessage('検索語句をクリアしました。');
-        }
+function clearQuery() {
+   document.getElementById('searchQuery').value = '';
+   showMessage('検索語句をクリアしました。');
+}
 
-        function showMessage(msg) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = msg;
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 3000);
-        }
+function showMessage(msg) {
+   const messageDiv = document.getElementById('message');
+   messageDiv.textContent = msg;
+   setTimeout(() => {
+       messageDiv.textContent = '';
+   }, 3000);
+}
 
-        function addToHistory(query) {
-            let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            history.unshift(query);
-            history = history.slice(0, 10);
-            localStorage.setItem('searchHistory', JSON.stringify(history));
-            loadHistory();
-        }
+function addToHistory(query) {
+   let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+   history.unshift(query);
+   history = history.slice(0, 10); // 最新の10件のみ保持
+   localStorage.setItem('searchHistory', JSON.stringify(history));
+   loadHistory();
+}
 
-        function loadHistory() {
-            const historyList = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            historyList.innerHTML = '';
-            history.forEach(query => {
-                const li = document.createElement('li');
-                li.textContent = query;
-                li.addEventListener('click', () => {
-                    const searchBox = document.getElementById('searchQuery');
-                    const currentQuery = searchBox.value;
-                    
-                    if (currentQuery) {
-                        searchBox.value = currentQuery + ' ' + query;
-                    } else {
-                        searchBox.value = query;
-                    }
-                    
-                    searchBox.focus();
-                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-                });
-                historyList.appendChild(li);
-            });
-        }
+function loadHistory() {
+   const historyList = document.getElementById('historyList');
+   const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+   historyList.innerHTML = '';
+   history.forEach(query => {
+       const li = document.createElement('li');
+       li.textContent = query;
+       li.addEventListener('click', () => {
+           const searchBox = document.getElementById('searchQuery');
+           const currentQuery = searchBox.value;
+           
+           if (currentQuery) {
+               searchBox.value = currentQuery + ' ' + query;
+           } else {
+               searchBox.value = query;
+           }
+           
+           searchBox.focus();
+           searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+       });
+       historyList.appendChild(li);
+   });
+}
 
-        function clearHistory() {
-            localStorage.removeItem('searchHistory');
-            loadHistory();
-            showMessage('検索履歴をクリアしました。');
-        }
-    </script>
+function clearHistory() {
+   localStorage.removeItem('searchHistory');
+   loadHistory();
+   showMessage('検索履歴をクリアしました。');
+}
+</script>
 </body>
 </html>
