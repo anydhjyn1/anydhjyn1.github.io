@@ -105,6 +105,7 @@
 
         <div id="maintenance">
             <a href="https://github.com/anydhjyn1/anydhjyn1.github.io/edit/main/index.html" target="_blank">メンテナンス</a>
+            <a href="https://anydhjyn1.github.io/imagesearch/" target="_blank">画像検索</a>
         </div>
 
         <div id="message"></div>
@@ -191,7 +192,7 @@
         });
 
         function getAISearchQuery(query) {
-            return `${query} について、特徴と価格を教えてください。`;
+            return `${query} について、特徴と価格と良い評判と悪い評判を教えてください。`;
         }
 
         function formatQuery(query) {
@@ -305,36 +306,49 @@
         }
 
         function loadHistory() {
-    const historyList = document.getElementById('historyList');
-    const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    historyList.innerHTML = '';
-    history.forEach(query => {
-        const li = document.createElement('li');
-        li.textContent = query;
-        li.addEventListener('click', () => {
-            // 既存の検索語句を取得
-            const searchBox = document.getElementById('searchQuery');
-            const currentQuery = searchBox.value;
-            
-            // 既存の検索語句があれば、スペースを追加して結合
-            if (currentQuery) {
-                searchBox.value = currentQuery + ' ' + query;
-            } else {
-                searchBox.value = query;
-            }
-            
-            // カーソルを文末に移動
-            searchBox.focus();
-            searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-        });
-        historyList.appendChild(li);
-    });
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            historyList.innerHTML = '';
+            history.forEach(query => {
+                const li = document.createElement('li');
+                li.textContent = query;
+                li.addEventListener('click', () => {
+                    // 既存の検索語句を取得
+                    const searchBox = document.getElementById('searchQuery');
+                    const currentQuery = searchBox.value;
+                    
+                    // 既存の検索語句があれば、スペースを追加して結合
+                    function loadHistory() {
+   const historyList = document.getElementById('historyList');
+   const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+   historyList.innerHTML = '';
+   history.forEach(query => {
+       const li = document.createElement('li');
+       li.textContent = query;
+       li.addEventListener('click', () => {
+           // 既存の検索語句を取得
+           const searchBox = document.getElementById('searchQuery');
+           const currentQuery = searchBox.value;
+           
+           // 既存の検索語句があれば、スペースを追加して結合
+           if (currentQuery) {
+               searchBox.value = currentQuery + ' ' + query;
+           } else {
+               searchBox.value = query;
+           }
+           
+           // カーソルを文末に移動
+           searchBox.focus();
+           searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+       });
+       historyList.appendChild(li);
+   });
 }
 
 function clearHistory() {
-    localStorage.removeItem('searchHistory');
-    loadHistory();
-    showMessage('検索履歴をクリアしました。');
+   localStorage.removeItem('searchHistory');
+   loadHistory();
+   showMessage('検索履歴をクリアしました。');
 }
 </script>
 </body>
