@@ -20,10 +20,6 @@
             padding: 10px;
             margin: 5px;
         }
-        #engineOptions label, #otherOptions label {
-            display: block;
-            margin-bottom: 5px;
-        }
         #links a {
             margin-right: 10px;
         }
@@ -49,12 +45,24 @@
         }
         .category-label {
             font-weight: bold;
-            margin-top: 15px;
-            margin-bottom: 5px;
+            display: inline-block;
+            margin-right: 10px;
         }
         .category-group {
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .category-group label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .search-categories {
             margin-bottom: 15px;
-            padding-left: 15px;
+            line-height: 2;
+        }
+        #otherOptions label {
+            display: inline-block;
+            margin-right: 20px;
         }
     </style>
 </head>
@@ -88,37 +96,47 @@
 
         <h2>まとめて検索のオプション</h2>
         <div id="engineOptions">
-            <div class="category-label">【検索エンジン】</div>
-            <div class="category-group">
-                <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
-                <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
+            <div class="search-categories">
+                <span class="category-label">【検索エンジン】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
+                    <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
+                </span>
             </div>
 
-            <div class="category-label">【AI】</div>
-            <div class="category-group">
-                <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
-                <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
-                <label><input type="checkbox" id="felo" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
+            <div class="search-categories">
+                <span class="category-label">【AI】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
+                    <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+                    <label><input type="checkbox" id="felo" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
+                </span>
             </div>
 
-            <div class="category-label">【通販】</div>
-            <div class="category-group">
-                <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
-                <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
-                <label><input type="checkbox" id="yahooShopping" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
-                <label><input type="checkbox" id="dshopping" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
-                <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+            <div class="search-categories">
+                <span class="category-label">【通販】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
+                    <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
+                    <label><input type="checkbox" id="yahooShopping" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
+                    <label><input type="checkbox" id="dshopping" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
+                    <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+                </span>
             </div>
 
-            <div class="category-label">【フリマ】</div>
-            <div class="category-group">
-                <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
-                <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+            <div class="search-categories">
+                <span class="category-label">【フリマ】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
+                    <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+                </span>
             </div>
 
-            <div class="category-label">【情報】</div>
-            <div class="category-group">
-                <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+            <div class="search-categories">
+                <span class="category-label">【情報】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+                </span>
             </div>
         </div>
 
@@ -150,6 +168,7 @@
     </div>
 
     <script>
+        // JavaScript部分は変更なしのため省略（前回のコードと同じ）
         function saveSettings() {
             const settings = {
                 engines: {
@@ -278,38 +297,38 @@
             saveSettings();
         }
 
-        function searchAll() {
-            const baseQuery = formatQuery(document.getElementById('searchQuery').value);
-            const aiQuery = getAISearchQuery(baseQuery);
-            const engines = [
-                {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
-                {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
-                {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
-                {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
-                {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
-                {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
-                {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
-                {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
-                {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
-                {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
-                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
-                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
-                {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`}
-            ];
+       function searchAll() {
+   const baseQuery = formatQuery(document.getElementById('searchQuery').value);
+   const aiQuery = getAISearchQuery(baseQuery);
+   const engines = [
+       {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
+       {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
+       {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
+       {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
+       {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
+       {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
+       {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
+       {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
+       {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
+       {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
+       {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
+       {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
+       {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`}
+   ];
 
-            engines.forEach(engine => {
-                if (document.getElementById(engine.id).checked) {
-                    window.open(engine.url, '_blank');
-                }
-            });
+   engines.forEach(engine => {
+       if (document.getElementById(engine.id).checked) {
+           window.open(engine.url, '_blank');
+       }
+   });
 
-            if (document.getElementById('recordHistory').checked) {
-                addToHistory(document.getElementById('searchQuery').value);
-            }
-            saveSettings();
-        }
+   if (document.getElementById('recordHistory').checked) {
+       addToHistory(document.getElementById('searchQuery').value);
+   }
+   saveSettings();
+}
 
-      function copyQuery() {
+function copyQuery() {
    const query = document.getElementById('searchQuery');
    query.select();
    document.execCommand('copy');
