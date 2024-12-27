@@ -47,6 +47,15 @@
             margin-top: 20px;
             font-size: 0.8em;
         }
+        .category-label {
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .category-group {
+            margin-bottom: 15px;
+            padding-left: 15px;
+        }
     </style>
 </head>
 <body>
@@ -79,19 +88,38 @@
 
         <h2>まとめて検索のオプション</h2>
         <div id="engineOptions">
-            <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
-            <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
-            <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
-            <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
-            <label><input type="checkbox" id="felo" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
-            <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
-            <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
-            <label><input type="checkbox" id="yahooShopping" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
-            <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
-            <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
-            <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
-            <label><input type="checkbox" id="dshopping" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
-            <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+            <div class="category-label">【検索エンジン】</div>
+            <div class="category-group">
+                <label><input type="checkbox" id="google" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
+                <label><input type="checkbox" id="yahoo" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
+            </div>
+
+            <div class="category-label">【AI】</div>
+            <div class="category-group">
+                <label><input type="checkbox" id="perplexity" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
+                <label><input type="checkbox" id="genspark" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+                <label><input type="checkbox" id="felo" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
+            </div>
+
+            <div class="category-label">【通販】</div>
+            <div class="category-group">
+                <label><input type="checkbox" id="amazon" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
+                <label><input type="checkbox" id="rakuten" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
+                <label><input type="checkbox" id="yahooShopping" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
+                <label><input type="checkbox" id="dshopping" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
+                <label><input type="checkbox" id="surugaya" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+            </div>
+
+            <div class="category-label">【フリマ】</div>
+            <div class="category-group">
+                <label><input type="checkbox" id="yahooAuctions" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
+                <label><input type="checkbox" id="mercari" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+            </div>
+
+            <div class="category-label">【情報】</div>
+            <div class="category-group">
+                <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+            </div>
         </div>
 
         <h2>その他オプション</h2>
@@ -281,63 +309,63 @@
             saveSettings();
         }
 
-        function copyQuery() {
-            const query = document.getElementById('searchQuery');
-            query.select();
-            document.execCommand('copy');
-            showMessage('検索語句をクリップボードにコピーしました。');
-        }
+      function copyQuery() {
+   const query = document.getElementById('searchQuery');
+   query.select();
+   document.execCommand('copy');
+   showMessage('検索語句をクリップボードにコピーしました。');
+}
 
-        function clearQuery() {
-            document.getElementById('searchQuery').value = '';
-            showMessage('検索語句をクリアしました。');
-        }
+function clearQuery() {
+   document.getElementById('searchQuery').value = '';
+   showMessage('検索語句をクリアしました。');
+}
 
-        function showMessage(msg) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = msg;
-            setTimeout(() => {
-                messageDiv.textContent = '';
-            }, 3000);
-        }
+function showMessage(msg) {
+   const messageDiv = document.getElementById('message');
+   messageDiv.textContent = msg;
+   setTimeout(() => {
+       messageDiv.textContent = '';
+   }, 3000);
+}
 
-        function addToHistory(query) {
-            let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            history.unshift(query);
-            history = history.slice(0, 10);
-            localStorage.setItem('searchHistory', JSON.stringify(history));
-            loadHistory();
-        }
+function addToHistory(query) {
+   let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+   history.unshift(query);
+   history = history.slice(0, 10);
+   localStorage.setItem('searchHistory', JSON.stringify(history));
+   loadHistory();
+}
 
-        function loadHistory() {
-            const historyList = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-            historyList.innerHTML = '';
-            history.forEach(query => {
-                const li = document.createElement('li');
-                li.textContent = query;
-                li.addEventListener('click', () => {
-                    const searchBox = document.getElementById('searchQuery');
-                    const currentQuery = searchBox.value;
-                    
-                    if (currentQuery) {
-                        searchBox.value = currentQuery + ' ' + query;
-                    } else {
-                        searchBox.value = query;
-                    }
-                    
-                    searchBox.focus();
-                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-                });
-                historyList.appendChild(li);
-            });
-        }
+function loadHistory() {
+   const historyList = document.getElementById('historyList');
+   const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+   historyList.innerHTML = '';
+   history.forEach(query => {
+       const li = document.createElement('li');
+       li.textContent = query;
+       li.addEventListener('click', () => {
+           const searchBox = document.getElementById('searchQuery');
+           const currentQuery = searchBox.value;
+           
+           if (currentQuery) {
+               searchBox.value = currentQuery + ' ' + query;
+           } else {
+               searchBox.value = query;
+           }
+           
+           searchBox.focus();
+           searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+       });
+       historyList.appendChild(li);
+   });
+}
 
-        function clearHistory() {
-            localStorage.removeItem('searchHistory');
-            loadHistory();
-            showMessage('検索履歴をクリアしました。');
-        }
-    </script>
+function clearHistory() {
+   localStorage.removeItem('searchHistory');
+   loadHistory();
+   showMessage('検索履歴をクリアしました。');
+}
+</script>
 </body>
 </html>
