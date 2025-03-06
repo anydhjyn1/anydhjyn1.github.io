@@ -64,6 +64,12 @@
             display: inline-block;
             margin-right: 20px;
         }
+        .category-controls {
+            margin-bottom: 10px;
+        }
+        .category-controls button {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -78,25 +84,12 @@
             <button id="clearQuery">検索語句のクリア</button>
         </div>
 
-        <div id="individualSearchButtons">
-            <button onclick="search('google')">Googleで検索</button>
-            <button onclick="search('yahoo')">Yahooで検索</button>
-            <button onclick="search('perplexity')">Perplexityで検索</button>
-            <button onclick="search('genspark')">GenSparkで検索</button>
-            <button onclick="search('felo')">Feloで検索</button>
-            <button onclick="search('amazon')">Amazonで検索</button>
-            <button onclick="search('rakuten')">楽天市場で検索</button>
-            <button onclick="search('yahooShopping')">Yahoo!ショッピングで検索</button>
-            <button onclick="search('yahooAuctions')">ヤフオクで検索</button>
-            <button onclick="search('mercari')">メルカリで検索</button>
-            <button onclick="search('surugaya')">駿河屋で検索</button>
-            <button onclick="search('dshopping')">dショッピングで検索</button>
-            <button onclick="search('saiyasune')">最安値.comで検索</button>
-            <button onclick="search('janpara')">ジャンパラで検索</button>
-            <button onclick="search('temu')">Temuで検索</button>
+        <h2>検索サイト選択</h2>
+        <div class="category-controls">
+            <button id="selectAll">全て選択</button>
+            <button id="deselectAll">全て解除</button>
         </div>
-
-        <h2>まとめて検索のオプション</h2>
+        
         <div id="engineOptions">
             <div class="search-categories">
                 <span class="category-label">【検索エンジン】</span>
@@ -219,6 +212,8 @@
             const copyQueryButton = document.getElementById('copyQuery');
             const clearQueryButton = document.getElementById('clearQuery');
             const clearHistoryButton = document.getElementById('clearHistory');
+            const selectAllButton = document.getElementById('selectAll');
+            const deselectAllButton = document.getElementById('deselectAll');
 
             const checkboxes = document.querySelectorAll('#engineOptions input[type="checkbox"], #otherOptions input[type="checkbox"]');
             checkboxes.forEach(checkbox => {
@@ -229,6 +224,25 @@
             copyQueryButton.addEventListener('click', copyQuery);
             clearQueryButton.addEventListener('click', clearQuery);
             clearHistoryButton.addEventListener('click', clearHistory);
+            
+            // 全選択・全解除ボタンのイベントリスナー
+            selectAllButton.addEventListener('click', function() {
+                const engineCheckboxes = document.querySelectorAll('#engineOptions input[type="checkbox"]');
+                engineCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                });
+                saveSettings();
+                showMessage('すべてのサイトを選択しました');
+            });
+            
+            deselectAllButton.addEventListener('click', function() {
+                const engineCheckboxes = document.querySelectorAll('#engineOptions input[type="checkbox"]');
+                engineCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                saveSettings();
+                showMessage('すべてのサイトの選択を解除しました');
+            });
 
             searchQuery.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter' && document.getElementById('enterToSearch').checked) {
@@ -248,156 +262,96 @@
             return query.replace(/[\s　]/g, '+');
         }
 
-        function search(engine) {
+        function searchAll() {
             const baseQuery = formatQuery(document.getElementById('searchQuery').value);
-            let url;
-            switch(engine) {
-                case 'google':
-                    url = `https://www.google.com/search?q=${baseQuery}`;
-                    break;
-                case 'yahoo':
-                    url = `https://search.yahoo.co.jp/search?p=${baseQuery}`;
-                    break;
-                case 'perplexity':
-                    const perplexityQuery = getAISearchQuery(baseQuery);
-                    url = `https://www.perplexity.ai/search?q=${perplexityQuery}`;
-                    break;
-                case 'genspark':
-                    const gensparkQuery = getAISearchQuery(baseQuery);
-                    url = `https://www.genspark.ai/search?query=${gensparkQuery}`;
-                    break;
-                case 'felo':
-                    const feloQuery = getAISearchQuery(baseQuery);
-                    url = `https://felo.ai/search?q=${feloQuery}`;
-                    break;
-                case 'amazon':
-                    url = `https://www.amazon.co.jp/s?k=${baseQuery}`;
-                    break;
-                case 'rakuten':
-                    url = `https://search.rakuten.co.jp/search/mall/${baseQuery}`;
-                    break;
-                case 'yahooShopping':
-                    url = `https://shopping.yahoo.co.jp/search?p=${baseQuery}`;
-                    break;
-                case 'yahooAuctions':
-                    url = `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`;
-                    break;
-                case 'mercari':
-                    url = `https://www.mercari.com/jp/search/?keyword=${baseQuery}`;
-                    break;
-                case 'surugaya':
-                    url = `https://www.suruga-ya.jp/search?search_word=${baseQuery}`;
-                    break;
-                case 'dshopping':
-                    url = `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`;
-                    break;
-                case 'saiyasune':
-                    url = `https://www.saiyasune.com/I1W${baseQuery}.html`;
-                    break;
-                case 'janpara':
-                    url = `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`;
-                    break;
-                case 'temu':
-                    url = `https://www.temu.com/search_result.html?search_key=${baseQuery}`;
-                    break;
-            }
-            window.open(url, '_blank');
+            const aiQuery = getAISearchQuery(baseQuery);
+            const engines = [
+                {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
+                {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
+                {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
+                {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
+                {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
+                {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
+                {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
+                {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
+                {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
+                {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
+                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
+                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
+                {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`},
+                {id: 'janpara', url: `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`},
+                {id: 'temu', url: `https://www.temu.com/search_result.html?search_key=${baseQuery}`}
+            ];
+
+            engines.forEach(engine => {
+                if (document.getElementById(engine.id).checked) {
+                    window.open(engine.url, '_blank');
+                }
+            });
+
             if (document.getElementById('recordHistory').checked) {
                 addToHistory(document.getElementById('searchQuery').value);
             }
             saveSettings();
         }
 
-        function searchAll() {
-   const baseQuery = formatQuery(document.getElementById('searchQuery').value);
-   const aiQuery = getAISearchQuery(baseQuery);
-   const engines = [
-       {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
-       {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
-       {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
-       {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
-       {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
-       {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
-       {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
-       {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
-       {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
-       {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
-       {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
-       {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
-       {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`},
-       {id: 'janpara', url: `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`},
-       {id: 'temu', url: `https://www.temu.com/search_result.html?search_key=${baseQuery}`}
-   ];
+        function copyQuery() {
+            const query = document.getElementById('searchQuery');
+            query.select();
+            document.execCommand('copy');
+            showMessage('検索語句をクリップボードにコピーしました。');
+        }
 
-   engines.forEach(engine => {
-       if (document.getElementById(engine.id).checked) {
-           window.open(engine.url, '_blank');
-       }
-   });
+        function clearQuery() {
+            document.getElementById('searchQuery').value = '';
+            showMessage('検索語句をクリアしました。');
+        }
 
-   if (document.getElementById('recordHistory').checked) {
-       addToHistory(document.getElementById('searchQuery').value);
-   }
-   saveSettings();
-}
+        function showMessage(msg) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = msg;
+            setTimeout(() => {
+                messageDiv.textContent = '';
+            }, 3000);
+        }
 
-function copyQuery() {
-   const query = document.getElementById('searchQuery');
-   query.select();
-   document.execCommand('copy');
-   showMessage('検索語句をクリップボードにコピーしました。');
-}
+        function addToHistory(query) {
+            let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            history.unshift(query);
+            history = history.slice(0, 10);
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+            loadHistory();
+        }
 
-function clearQuery() {
-   document.getElementById('searchQuery').value = '';
-   showMessage('検索語句をクリアしました。');
-}
+        function loadHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            historyList.innerHTML = '';
+            history.forEach(query => {
+                const li = document.createElement('li');
+                li.textContent = query;
+                li.addEventListener('click', () => {
+                    const searchBox = document.getElementById('searchQuery');
+                    const currentQuery = searchBox.value;
+                    
+                    if (currentQuery) {
+                        searchBox.value = currentQuery + ' ' + query;
+                    } else {
+                        searchBox.value = query;
+                    }
+                    
+                    searchBox.focus();
+                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+                });
+                historyList.appendChild(li);
+            });
+        }
 
-function showMessage(msg) {
-   const messageDiv = document.getElementById('message');
-   messageDiv.textContent = msg;
-   setTimeout(() => {
-       messageDiv.textContent = '';
-   }, 3000);
-}
-
-function addToHistory(query) {
-   let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-   history.unshift(query);
-   history = history.slice(0, 10);
-   localStorage.setItem('searchHistory', JSON.stringify(history));
-   loadHistory();
-}
-
-function loadHistory() {
-   const historyList = document.getElementById('historyList');
-   const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
-   historyList.innerHTML = '';
-   history.forEach(query => {
-       const li = document.createElement('li');
-       li.textContent = query;
-       li.addEventListener('click', () => {
-           const searchBox = document.getElementById('searchQuery');
-           const currentQuery = searchBox.value;
-           
-           if (currentQuery) {
-               searchBox.value = currentQuery + ' ' + query;
-           } else {
-               searchBox.value = query;
-           }
-           
-           searchBox.focus();
-           searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-       });
-       historyList.appendChild(li);
-   });
-}
-
-function clearHistory() {
-   localStorage.removeItem('searchHistory');
-   loadHistory();
-   showMessage('検索履歴をクリアしました。');
-}
-</script>
+        function clearHistory() {
+            localStorage.removeItem('searchHistory');
+            loadHistory();
+            showMessage('検索履歴をクリアしました。');
+        }
+    </script>
 </body>
 </html>
