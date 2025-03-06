@@ -491,17 +491,16 @@
                 const li = document.createElement('li');
                 li.textContent = query;
                 li.addEventListener('click', () => {
+                    // 検索ボックスに履歴を入力
                     const searchBox = document.getElementById('searchQuery');
-                    const currentQuery = searchBox.value;
+                    searchBox.value = query;
                     
-                    if (currentQuery) {
-                        searchBox.value = currentQuery + ' ' + query;
-                    } else {
-                        searchBox.value = query;
-                    }
-                    
+                    // カーソルを文末に移動
                     searchBox.focus();
                     searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
+                    
+                    // 現在のチェックボックスの設定で検索を実行
+                    searchAll();
                 });
                 historyList.appendChild(li);
             });
