@@ -135,6 +135,31 @@
                     <label><input type="checkbox" id="saiyasune" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
                 </span>
             </div>
+
+            <div class="search-categories">
+                <span class="category-label">【スポーツ店】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="supersports" checked> <a href="https://www.supersports.com/ja-jp/xebio/" target="_blank">ゼビオ</a></label>
+                    <label><input type="checkbox" id="alpen" checked> <a href="https://store.alpen-group.jp/" target="_blank">アルペン</a></label>
+                    <label><input type="checkbox" id="himaraya" checked> <a href="https://www.himaraya.co.jp/" target="_blank">ヒマラヤ</a></label>
+                    <label><input type="checkbox" id="victoria" checked> <a href="https://store.megasports.jp/" target="_blank">ヴィクトリア</a></label>
+                    <label><input type="checkbox" id="yodobashi" checked> <a href="https://www.yodobashi.com/" target="_blank">ヨドバシ</a></label>
+                    <label><input type="checkbox" id="biccamera" checked> <a href="https://www.biccamera.com/" target="_blank">ビックカメラ</a></label>
+                    <label><input type="checkbox" id="workman" checked> <a href="https://workman.jp/" target="_blank">ワークマン</a></label>
+                    <label><input type="checkbox" id="dfashion" checked> <a href="https://dfashion.docomo.ne.jp/" target="_blank">dファッション</a></label>
+                </span>
+            </div>
+
+            <div class="search-categories">
+                <span class="category-label">【テニス専門】</span>
+                <span class="category-group">
+                    <label><input type="checkbox" id="minemura" checked> <a href="https://minemura-net.com/" target="_blank">峰村商店</a></label>
+                    <label><input type="checkbox" id="windsor" checked> <a href="https://www.windsorracket.co.jp/" target="_blank">ウィンザー</a></label>
+                    <label><input type="checkbox" id="tennisclassic" checked> <a href="https://shop.tennisclassic.jp/" target="_blank">テニスクラシック</a></label>
+                    <label><input type="checkbox" id="lafino" checked> <a href="https://www.lafino.co.jp/" target="_blank">ラフィノ</a></label>
+                    <label><input type="checkbox" id="kpitennis" checked> <a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
+                </span>
+            </div>
         </div>
 
         <h2>その他オプション</h2>
@@ -182,7 +207,22 @@
                     dshopping: document.getElementById('dshopping').checked,
                     saiyasune: document.getElementById('saiyasune').checked,
                     janpara: document.getElementById('janpara').checked,
-                    temu: document.getElementById('temu').checked
+                    temu: document.getElementById('temu').checked,
+                    // スポーツ店
+                    supersports: document.getElementById('supersports').checked,
+                    alpen: document.getElementById('alpen').checked,
+                    himaraya: document.getElementById('himaraya').checked,
+                    victoria: document.getElementById('victoria').checked,
+                    yodobashi: document.getElementById('yodobashi').checked,
+                    biccamera: document.getElementById('biccamera').checked,
+                    workman: document.getElementById('workman').checked,
+                    dfashion: document.getElementById('dfashion').checked,
+                    // テニス専門店
+                    minemura: document.getElementById('minemura').checked,
+                    windsor: document.getElementById('windsor').checked,
+                    tennisclassic: document.getElementById('tennisclassic').checked,
+                    lafino: document.getElementById('lafino').checked,
+                    kpitennis: document.getElementById('kpitennis').checked
                 },
                 options: {
                     enterToSearch: document.getElementById('enterToSearch').checked,
@@ -266,21 +306,47 @@
             const baseQuery = formatQuery(document.getElementById('searchQuery').value);
             const aiQuery = getAISearchQuery(baseQuery);
             const engines = [
+                // 検索エンジン
                 {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
                 {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
+                
+                // AI検索
                 {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
                 {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
                 {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
+                
+                // 通販サイト
                 {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
                 {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
                 {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
+                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
+                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
+                {id: 'janpara', url: `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`},
+                {id: 'temu', url: `https://www.temu.com/search_result.html?search_key=${baseQuery}`},
+                
+                // フリマサイト
                 {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
                 {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
-                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
-                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
+                
+                // 情報サイト
                 {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`},
-                {id: 'janpara', url: `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`},
-                {id: 'temu', url: `https://www.temu.com/search_result.html?search_key=${baseQuery}`}
+                
+                // スポーツ店
+                {id: 'supersports', url: `https://www.supersports.com/ja-jp/xebio/products/?keyword=${baseQuery}`},
+                {id: 'alpen', url: `https://store.alpen-group.jp/disp/CSfContentsPLP.jsp?baseCatTp=1&dispNo=001069&q2=${baseQuery}&summaryInfoBaseCatTp=1`},
+                {id: 'himaraya', url: `https://www.himaraya.co.jp/search?q=${baseQuery}&path_fs=&sort=Score%2Cnumber9&searchbox=1`},
+                {id: 'victoria', url: `https://store.megasports.jp/s/sa/search?fr=${baseQuery}&pl=&pu=&dl=&du=`},
+                {id: 'yodobashi', url: `https://www.yodobashi.com/?word=${baseQuery}`},
+                {id: 'biccamera', url: `https://www.biccamera.com/bc/category/?q=${baseQuery}`},
+                {id: 'workman', url: `https://workman.jp/shop/goods/search.aspx?q=${baseQuery}`},
+                {id: 'dfashion', url: `https://dfashion.docomo.ne.jp/fw/list/tr_f-fw_${baseQuery}`},
+                
+                // テニス専門店
+                {id: 'minemura', url: `https://minemura-net.com/p/search?keyword=${baseQuery}`},
+                {id: 'windsor', url: `https://www.windsorracket.co.jp/shop/goods/search.aspx?search=x&keyword=${baseQuery}&search=search`},
+                {id: 'tennisclassic', url: `https://shop.tennisclassic.jp/products/list.php?mode=search&name=${baseQuery}`},
+                {id: 'lafino', url: `https://www.lafino.co.jp/p/search?keyword=${baseQuery}`},
+                {id: 'kpitennis', url: `https://kpitennis.com/products/list?name=${baseQuery}`}
             ];
 
             engines.forEach(engine => {
