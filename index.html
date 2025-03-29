@@ -126,6 +126,8 @@
                     <label><input type="checkbox" id="perplexity" class="ai-checkbox" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
                     <label><input type="checkbox" id="genspark" class="ai-checkbox" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
                     <label><input type="checkbox" id="felo" class="ai-checkbox" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
+                    <label><input type="checkbox" id="chatgpt" class="ai-checkbox" checked> <a href="https://chatgpt.com" target="_blank">ChatGPT</a></label>
+                    <label><input type="checkbox" id="claude" class="ai-checkbox" checked> <a href="https://claude.ai" target="_blank">Claude</a></label>
                 </span>
             </div>
 
@@ -303,6 +305,8 @@
                     perplexity: document.getElementById('perplexity').checked,
                     genspark: document.getElementById('genspark').checked,
                     felo: document.getElementById('felo').checked,
+                    chatgpt: document.getElementById('chatgpt').checked,
+                    claude: document.getElementById('claude').checked,
                     amazon: document.getElementById('amazon').checked,
                     rakuten: document.getElementById('rakuten').checked,
                     yahooShopping: document.getElementById('yahooShopping').checked,
@@ -458,6 +462,8 @@
                 {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
                 {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
                 {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
+                {id: 'chatgpt', url: `https://chatgpt.com/?q=${aiQuery}`},
+                {id: 'claude', url: `https://claude.ai/new?q=${aiQuery}`},
                 
                 // 通販サイト
                 {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
