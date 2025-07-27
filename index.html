@@ -166,6 +166,77 @@
             text-decoration: underline;
         }
         
+        .ai-text-section {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .ai-text-controls {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        #aiTextPreset {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+        }
+        
+        #aiQueryText {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        
+        .custom-text-section {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        .custom-text-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        #customTextInput {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .custom-text-list {
+            font-size: 14px;
+        }
+        
+        .custom-text-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            margin: 5px 0;
+            background-color: white;
+            border-radius: 3px;
+        }
+        
+        .custom-text-item button {
+            padding: 3px 8px;
+            font-size: 12px;
+        }
+        
         #message {
             position: fixed;
             top: 20px;
@@ -261,7 +332,8 @@
         <h2>プリセット選択</h2>
         <div class="preset-buttons">
             <button class="preset-button" data-preset="new-purchase">新品購入</button>
-            <button class="preset-button" data-preset="lowest-price">最低価格調査</button>
+            <button class="preset-button" data-preset="new-used-purchase">新品中古購入</button>
+            <button class="preset-button" data-preset="purchase-consideration">購入検討</button>
             <button class="preset-button" data-preset="clear-all">全て解除</button>
         </div>
         
@@ -339,6 +411,32 @@
                 <div class="checkbox-item">
                     <input type="checkbox" id="claude" class="ai-checkbox" checked>
                     <label for="claude"><a href="https://claude.ai" target="_blank">Claude</a></label>
+                </div>
+            </div>
+            
+            <!-- AI検索用テキスト設定 -->
+            <div class="ai-text-section">
+                <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px;">AI検索用追加テキスト</h3>
+                <div class="ai-text-controls">
+                    <select id="aiTextPreset">
+                        <option value="default">デフォルト（特徴・価格・評判）</option>
+                        <option value="detailed">詳細分析（代替品・比較含む）</option>
+                        <option value="custom1">カスタム1</option>
+                        <option value="custom2">カスタム2</option>
+                        <option value="custom3">カスタム3</option>
+                    </select>
+                    <button id="resetAiText" class="secondary">初期値に戻す</button>
+                </div>
+                <textarea id="aiQueryText">について、特徴と価格と良い評判と悪い評判を教えてください。</textarea>
+                
+                <!-- カスタムテキスト保存機能 -->
+                <div class="custom-text-section">
+                    <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 13px;">カスタムテキストの保存</h4>
+                    <div class="custom-text-controls">
+                        <input type="text" id="customTextInput" placeholder="カスタムテキストを入力">
+                        <button id="saveCustomText">保存</button>
+                    </div>
+                    <div id="customTextList" class="custom-text-list"></div>
                 </div>
             </div>
         </div>
@@ -491,6 +589,10 @@
             </div>
             <div class="checkbox-group">
                 <div class="checkbox-item">
+                    <input type="checkbox" id="kpitennis" class="tennis-checkbox" checked>
+                    <label for="kpitennis"><a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
+                </div>
+                <div class="checkbox-item">
                     <input type="checkbox" id="minemura" class="tennis-checkbox" checked>
                     <label for="minemura"><a href="https://minemura-net.com/" target="_blank">峰村商店</a></label>
                 </div>
@@ -505,10 +607,6 @@
                 <div class="checkbox-item">
                     <input type="checkbox" id="lafino" class="tennis-checkbox" checked>
                     <label for="lafino"><a href="https://www.lafino.co.jp/" target="_blank">ラフィノ</a></label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="kpitennis" class="tennis-checkbox" checked>
-                    <label for="kpitennis"><a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
                 </div>
             </div>
         </div>
@@ -541,15 +639,28 @@
     <div id="message"></div>
     
     <script>
+        // AI検索テキストプリセット
+        const aiTextPresets = {
+            default: 'について、特徴と価格と良い評判と悪い評判を教えてください。',
+            detailed: 'について、特徴と価格と良い評判と悪い評判を教えてください。注意点やおすすめの代替手段、代替商品を教えてください。類似商品やラインナップがある場合、それぞれを比較してください。'
+        };
+        
         // プリセット設定
         const presets = {
             'new-purchase': {
                 name: '新品購入',
-                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping']
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping'],
+                aiText: aiTextPresets.default
             },
-            'lowest-price': {
-                name: '最低価格調査',
-                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping', 'surugaya', 'janpara', 'yahooAuctions', 'mercari']
+            'new-used-purchase': {
+                name: '新品中古購入',
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping', 'surugaya', 'janpara', 'yahooAuctions', 'mercari'],
+                aiText: aiTextPresets.default
+            },
+            'purchase-consideration': {
+                name: '購入検討',
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten'],
+                aiText: aiTextPresets.detailed
             }
         };
         
@@ -598,11 +709,11 @@
             dfashion: { url: 'https://dfashion.docomo.ne.jp/fw/list/tr_f-fw_{query}', isAI: false },
             
             // テニス専門店
+            kpitennis: { url: 'https://kpitennis.com/products/list?name={query}', isAI: false },
             minemura: { url: 'https://minemura-net.com/p/search?keyword={query}', isAI: false },
             windsor: { url: 'https://www.windsorracket.co.jp/shop/goods/search.aspx?keyword={query}', isAI: false },
             tennisclassic: { url: 'https://shop.tennisclassic.jp/products/list.php?name={query}', isAI: false },
-            lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false },
-            kpitennis: { url: 'https://kpitennis.com/products/list?name={query}', isAI: false }
+            lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false }
         };
         
         // 設定の保存
@@ -612,7 +723,9 @@
                 options: {
                     enterToSearch: document.getElementById('enterToSearch').checked,
                     recordHistory: document.getElementById('recordHistory').checked
-                }
+                },
+                aiQueryText: document.getElementById('aiQueryText').value,
+                customTexts: getCustomTexts()
             };
             
             Object.keys(searchEngines).forEach(engine => {
@@ -637,7 +750,103 @@
                 });
                 document.getElementById('enterToSearch').checked = settings.options.enterToSearch;
                 document.getElementById('recordHistory').checked = settings.options.recordHistory;
+                
+                if (settings.aiQueryText) {
+                    document.getElementById('aiQueryText').value = settings.aiQueryText;
+                }
+                
+                if (settings.customTexts) {
+                    updateCustomTextList();
+                    updateAiTextPresetDropdown();
+                }
             }
+        }
+        
+        // カスタムテキストの取得
+        function getCustomTexts() {
+            const customTexts = JSON.parse(localStorage.getItem('customTexts')) || {};
+            return customTexts;
+        }
+        
+        // カスタムテキストの保存
+        function saveCustomText() {
+            const customTextInput = document.getElementById('customTextInput');
+            const text = customTextInput.value.trim();
+            if (!text) {
+                showMessage('カスタムテキストを入力してください');
+                return;
+            }
+            
+            const customTexts = getCustomTexts();
+            const customCount = Object.keys(customTexts).length;
+            
+            if (customCount >= 3) {
+                showMessage('カスタムテキストは最大3つまで保存できます');
+                return;
+            }
+            
+            const customId = `custom${customCount + 1}`;
+            customTexts[customId] = text;
+            localStorage.setItem('customTexts', JSON.stringify(customTexts));
+            
+            customTextInput.value = '';
+            updateCustomTextList();
+            updateAiTextPresetDropdown();
+            showMessage('カスタムテキストを保存しました');
+        }
+        
+        // カスタムテキストリストの更新
+        function updateCustomTextList() {
+            const customTextList = document.getElementById('customTextList');
+            const customTexts = getCustomTexts();
+            customTextList.innerHTML = '';
+            
+            Object.entries(customTexts).forEach(([id, text]) => {
+                const item = document.createElement('div');
+                item.className = 'custom-text-item';
+                item.innerHTML = `
+                    <span>${text.substring(0, 50)}${text.length > 50 ? '...' : ''}</span>
+                    <button onclick="deleteCustomText('${id}')" class="danger">削除</button>
+                `;
+                customTextList.appendChild(item);
+            });
+        }
+        
+        // カスタムテキストの削除
+        function deleteCustomText(id) {
+            const customTexts = getCustomTexts();
+            delete customTexts[id];
+            
+            // IDを再整理
+            const newCustomTexts = {};
+            let index = 1;
+            Object.values(customTexts).forEach(text => {
+                newCustomTexts[`custom${index}`] = text;
+                index++;
+            });
+            
+            localStorage.setItem('customTexts', JSON.stringify(newCustomTexts));
+            updateCustomTextList();
+            updateAiTextPresetDropdown();
+            showMessage('カスタムテキストを削除しました');
+        }
+        
+        // AIテキストプリセットドロップダウンの更新
+        function updateAiTextPresetDropdown() {
+            const dropdown = document.getElementById('aiTextPreset');
+            const customTexts = getCustomTexts();
+            
+            // カスタムオプションを更新
+            ['custom1', 'custom2', 'custom3'].forEach(customId => {
+                const option = dropdown.querySelector(`option[value="${customId}"]`);
+                if (customTexts[customId]) {
+                    option.textContent = `カスタム${customId.slice(-1)}: ${customTexts[customId].substring(0, 20)}...`;
+                    option.disabled = false;
+                } else {
+                    option.textContent = `カスタム${customId.slice(-1)}`;
+                    option.disabled = true;
+                }
+            });
         }
         
         // メッセージ表示
@@ -657,7 +866,8 @@
         
         // AI検索用のクエリ生成
         function getAIQuery(query) {
-            return `${query} について、特徴と価格と良い評判と悪い評判を教えてください。`;
+            const aiText = document.getElementById('aiQueryText').value;
+            return `${query} ${aiText}`;
         }
         
         // 検索実行
@@ -750,6 +960,12 @@
                         checkbox.checked = true;
                     }
                 });
+                
+                // AI検索テキストも設定
+                if (presets[presetId].aiText) {
+                    document.getElementById('aiQueryText').value = presets[presetId].aiText;
+                }
+                
                 showMessage(`${presets[presetId].name}プリセットを適用しました`);
             }
             
@@ -763,6 +979,37 @@
             document.getElementById('copyQuery').addEventListener('click', copyQuery);
             document.getElementById('clearQuery').addEventListener('click', clearQuery);
             document.getElementById('clearHistory').addEventListener('click', clearHistory);
+            document.getElementById('resetAiText').addEventListener('click', function() {
+                document.getElementById('aiQueryText').value = aiTextPresets.default;
+                document.getElementById('aiTextPreset').value = 'default';
+                saveSettings();
+                showMessage('AI検索テキストを初期値に戻しました');
+            });
+            
+            // AIテキストプリセットの変更
+            document.getElementById('aiTextPreset').addEventListener('change', function() {
+                const selected = this.value;
+                if (selected === 'default' || selected === 'detailed') {
+                    document.getElementById('aiQueryText').value = aiTextPresets[selected];
+                } else if (selected.startsWith('custom')) {
+                    const customTexts = getCustomTexts();
+                    if (customTexts[selected]) {
+                        document.getElementById('aiQueryText').value = customTexts[selected];
+                    }
+                }
+                saveSettings();
+            });
+            
+            // AIテキストの変更を保存
+            document.getElementById('aiQueryText').addEventListener('change', saveSettings);
+            
+            // カスタムテキスト保存
+            document.getElementById('saveCustomText').addEventListener('click', saveCustomText);
+            document.getElementById('customTextInput').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    saveCustomText();
+                }
+            });
             
             // 全選択・全解除
             document.getElementById('selectAll').addEventListener('click', function() {
@@ -832,6 +1079,8 @@
             // 設定と履歴の読み込み
             loadSettings();
             loadHistory();
+            updateCustomTextList();
+            updateAiTextPresetDropdown();
         });
     </script>
 </body>
