@@ -6,342 +6,626 @@
     <title>複数検索エンジン同時検索</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
         #searchQuery {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
         }
+        
+        #searchQuery:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
         button {
-            padding: 10px;
-            margin: 5px;
-        }
-        #links a {
-            margin-right: 10px;
-        }
-        #history-panel {
-            margin-top: 20px;
-            border-top: 1px solid #ccc;
-            padding-top: 20px;
-        }
-        #historyList li {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            padding: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
-        #historyList li:hover {
-            background-color: #f0f0f0;
+        
+        button:hover {
+            background-color: #45a049;
         }
-        #message {
-            color: green;
-            margin: 10px 0;
+        
+        button.secondary {
+            background-color: #008CBA;
         }
-        #maintenance {
-            margin-top: 20px;
-            font-size: 0.8em;
+        
+        button.secondary:hover {
+            background-color: #007399;
         }
-        .category-label {
-            font-weight: bold;
-            display: inline-block;
-            margin-right: 10px;
+        
+        button.danger {
+            background-color: #f44336;
         }
-        .category-group {
-            display: inline-block;
-            margin-right: 20px;
+        
+        button.danger:hover {
+            background-color: #da190b;
         }
-        .category-group label {
-            display: inline-block;
-            margin-right: 10px;
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-        .search-categories {
-            margin-bottom: 15px;
-            line-height: 2;
+        
+        .preset-button {
+            background-color: #FF9800;
+            padding: 8px 16px;
+            font-size: 13px;
         }
-        #otherOptions label {
-            display: inline-block;
-            margin-right: 20px;
+        
+        .preset-button:hover {
+            background-color: #e68900;
         }
-        .category-controls {
-            margin-bottom: 10px;
+        
+        .category-section {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
         }
-        .category-controls button {
-            margin-right: 10px;
-        }
+        
         .category-header {
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
+        
+        .category-label {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
         .category-buttons {
-            margin-left: 10px;
+            display: flex;
+            gap: 5px;
         }
+        
         .category-buttons button {
-            padding: 3px 6px;
-            margin-right: 5px;
-            font-size: 0.8em;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-item a {
+            color: #008CBA;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .checkbox-item a:hover {
+            text-decoration: underline;
+        }
+        
+        #message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        #message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+        
+        .history-section {
+            margin-top: 40px;
+            border-top: 2px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        #historyList {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        #historyList li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #historyList li:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .options-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .options-section label {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .links-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .links-section a {
+            margin: 0 10px;
+            color: #008CBA;
+            text-decoration: none;
+        }
+        
+        .links-section a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div id="main-content">
+    <div class="container">
         <h1>複数検索エンジン同時検索</h1>
-
-        <input type="text" id="searchQuery" placeholder="検索語句を入力してください">
-
-        <div id="mainButtons">
+        
+        <input type="text" id="searchQuery" placeholder="検索語句を入力してください" autofocus>
+        
+        <div class="button-group">
             <button id="searchAll">まとめて検索</button>
-            <button id="copyQuery">検索語句のコピー</button>
-            <button id="clearQuery">検索語句のクリア</button>
-        </div>
-
-        <h2>検索サイト選択</h2>
-        <div class="category-controls">
-            <button id="selectAll">全て選択</button>
-            <button id="deselectAll">全て解除</button>
+            <button id="copyQuery" class="secondary">検索語句のコピー</button>
+            <button id="clearQuery" class="danger">検索語句のクリア</button>
         </div>
         
-        <div id="engineOptions">
-            <div class="search-categories">
-                <span class="category-label">【検索エンジン】</span>
-                <span class="category-buttons">
-                    <button class="select-category" data-category="search">選択</button>
-                    <button class="deselect-category" data-category="search">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="google" class="search-checkbox" checked> <a href="https://google.co.jp" target="_blank">Google</a></label>
-                    <label><input type="checkbox" id="yahoo" class="search-checkbox" checked> <a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <span class="category-label">【AI】</span>
-                <span class="category-buttons">
-                    <button class="select-category" data-category="ai">選択</button>
-                    <button class="deselect-category" data-category="ai">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="perplexity" class="ai-checkbox" checked> <a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
-                    <label><input type="checkbox" id="genspark" class="ai-checkbox" checked> <a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
-                    <label><input type="checkbox" id="felo" class="ai-checkbox" checked> <a href="https://felo.ai" target="_blank">Felo</a></label>
-                    <label><input type="checkbox" id="chatgpt" class="ai-checkbox" checked> <a href="https://chatgpt.com" target="_blank">ChatGPT</a></label>
-                    <label><input type="checkbox" id="claude" class="ai-checkbox" checked> <a href="https://claude.ai" target="_blank">Claude</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <span class="category-label">【通販】</span>
-                <span class="category-buttons">
-                    <button class="select-category" data-category="shopping">選択</button>
-                    <button class="deselect-category" data-category="shopping">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="amazon" class="shopping-checkbox" checked> <a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
-                    <label><input type="checkbox" id="rakuten" class="shopping-checkbox" checked> <a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
-                    <label><input type="checkbox" id="yahooShopping" class="shopping-checkbox" checked> <a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
-                    <label><input type="checkbox" id="dshopping" class="shopping-checkbox" checked> <a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
-                    <label><input type="checkbox" id="surugaya" class="shopping-checkbox" checked> <a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
-                    <label><input type="checkbox" id="janpara" class="shopping-checkbox" checked> <a href="https://www.janpara.co.jp/" target="_blank">ジャンパラ</a></label>
-                    <label><input type="checkbox" id="temu" class="shopping-checkbox" checked> <a href="https://www.temu.com/" target="_blank">Temu</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <span class="category-label">【フリマ】</span>
-                <span class="category-buttons">
-                    <button class="select-category" data-category="flea">選択</button>
-                    <button class="deselect-category" data-category="flea">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="yahooAuctions" class="flea-checkbox" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
-                    <label><input type="checkbox" id="mercari" class="flea-checkbox" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <span class="category-label">【情報】</span>
-                <span class="category-buttons">
+        <h2>プリセット選択</h2>
+        <div class="preset-buttons">
+            <button class="preset-button" data-preset="new-purchase">新品購入</button>
+            <button class="preset-button" data-preset="lowest-price">最低価格調査</button>
+            <button class="preset-button" data-preset="clear-all">全て解除</button>
+        </div>
+        
+        <h2>検索サイト選択</h2>
+        
+        <div class="button-group">
+            <button id="selectAll">全て選択</button>
+            <button id="deselectAll" class="secondary">全て解除</button>
+        </div>
+        
+        <!-- 情報サイト -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【情報サイト】</span>
+                <div class="category-buttons">
                     <button class="select-category" data-category="info">選択</button>
-                    <button class="deselect-category" data-category="info">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="saiyasune" class="info-checkbox" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
-                </span>
+                    <button class="deselect-category secondary" data-category="info">解除</button>
+                </div>
             </div>
-
-            <div class="search-categories">
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="saiyasune" class="info-checkbox" checked>
+                    <label for="saiyasune"><a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 検索エンジン -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【検索エンジン】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="search">選択</button>
+                    <button class="deselect-category secondary" data-category="search">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="google" class="search-checkbox" checked>
+                    <label for="google"><a href="https://google.co.jp" target="_blank">Google</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="yahoo" class="search-checkbox" checked>
+                    <label for="yahoo"><a href="https://search.yahoo.co.jp" target="_blank">Yahoo</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI検索 -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【AI検索】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="ai">選択</button>
+                    <button class="deselect-category secondary" data-category="ai">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="perplexity" class="ai-checkbox" checked>
+                    <label for="perplexity"><a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="genspark" class="ai-checkbox" checked>
+                    <label for="genspark"><a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="felo" class="ai-checkbox" checked>
+                    <label for="felo"><a href="https://felo.ai" target="_blank">Felo</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="chatgpt" class="ai-checkbox" checked>
+                    <label for="chatgpt"><a href="https://chatgpt.com" target="_blank">ChatGPT</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="claude" class="ai-checkbox" checked>
+                    <label for="claude"><a href="https://claude.ai" target="_blank">Claude</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 通販サイト -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【通販サイト】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="shopping">選択</button>
+                    <button class="deselect-category secondary" data-category="shopping">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="amazon" class="shopping-checkbox" checked>
+                    <label for="amazon"><a href="https://www.amazon.co.jp" target="_blank">Amazon</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="rakuten" class="shopping-checkbox" checked>
+                    <label for="rakuten"><a href="https://www.rakuten.co.jp/" target="_blank">楽天市場</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="yahooShopping" class="shopping-checkbox" checked>
+                    <label for="yahooShopping"><a href="https://shopping.yahoo.co.jp/" target="_blank">Yahoo!ショッピング</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="dshopping" class="shopping-checkbox" checked>
+                    <label for="dshopping"><a href="https://dshopping.docomo.ne.jp/" target="_blank">dショッピング</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中古サイト -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【中古サイト】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="used">選択</button>
+                    <button class="deselect-category secondary" data-category="used">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="surugaya" class="used-checkbox" checked>
+                    <label for="surugaya"><a href="https://www.suruga-ya.jp/" target="_blank">駿河屋</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="janpara" class="used-checkbox" checked>
+                    <label for="janpara"><a href="https://www.janpara.co.jp/" target="_blank">ジャンパラ</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- フリマサイト -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【フリマサイト】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="flea">選択</button>
+                    <button class="deselect-category secondary" data-category="flea">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="yahooAuctions" class="flea-checkbox" checked>
+                    <label for="yahooAuctions"><a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mercari" class="flea-checkbox" checked>
+                    <label for="mercari"><a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 中国サイト -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【中国サイト】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="china">選択</button>
+                    <button class="deselect-category secondary" data-category="china">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="temu" class="china-checkbox" checked>
+                    <label for="temu"><a href="https://www.temu.com/" target="_blank">Temu</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="aliexpress" class="china-checkbox" checked>
+                    <label for="aliexpress"><a href="https://ja.aliexpress.com/" target="_blank">AliExpress</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- スポーツ店 -->
+        <div class="category-section">
+            <div class="category-header">
                 <span class="category-label">【スポーツ店】</span>
-                <span class="category-buttons">
+                <div class="category-buttons">
                     <button class="select-category" data-category="sports">選択</button>
-                    <button class="deselect-category" data-category="sports">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="supersports" class="sports-checkbox" checked> <a href="https://www.supersports.com/ja-jp/xebio/" target="_blank">ゼビオ</a></label>
-                    <label><input type="checkbox" id="alpen" class="sports-checkbox" checked> <a href="https://store.alpen-group.jp/" target="_blank">アルペン</a></label>
-                    <label><input type="checkbox" id="himaraya" class="sports-checkbox" checked> <a href="https://www.himaraya.co.jp/" target="_blank">ヒマラヤ</a></label>
-                    <label><input type="checkbox" id="victoria" class="sports-checkbox" checked> <a href="https://store.megasports.jp/" target="_blank">ヴィクトリア</a></label>
-                    <label><input type="checkbox" id="yodobashi" class="sports-checkbox" checked> <a href="https://www.yodobashi.com/" target="_blank">ヨドバシ</a></label>
-                    <label><input type="checkbox" id="biccamera" class="sports-checkbox" checked> <a href="https://www.biccamera.com/" target="_blank">ビックカメラ</a></label>
-                    <label><input type="checkbox" id="workman" class="sports-checkbox" checked> <a href="https://workman.jp/" target="_blank">ワークマン</a></label>
-                    <label><input type="checkbox" id="dfashion" class="sports-checkbox" checked> <a href="https://dfashion.docomo.ne.jp/" target="_blank">dファッション</a></label>
-                </span>
+                    <button class="deselect-category secondary" data-category="sports">解除</button>
+                </div>
             </div>
-
-            <div class="search-categories">
-                <span class="category-label">【テニス専門】</span>
-                <span class="category-buttons">
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="supersports" class="sports-checkbox" checked>
+                    <label for="supersports"><a href="https://www.supersports.com/ja-jp/xebio/" target="_blank">ゼビオ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="alpen" class="sports-checkbox" checked>
+                    <label for="alpen"><a href="https://store.alpen-group.jp/" target="_blank">アルペン</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="himaraya" class="sports-checkbox" checked>
+                    <label for="himaraya"><a href="https://www.himaraya.co.jp/" target="_blank">ヒマラヤ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="victoria" class="sports-checkbox" checked>
+                    <label for="victoria"><a href="https://store.megasports.jp/" target="_blank">ヴィクトリア</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="yodobashi" class="sports-checkbox" checked>
+                    <label for="yodobashi"><a href="https://www.yodobashi.com/" target="_blank">ヨドバシ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="biccamera" class="sports-checkbox" checked>
+                    <label for="biccamera"><a href="https://www.biccamera.com/" target="_blank">ビックカメラ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="workman" class="sports-checkbox" checked>
+                    <label for="workman"><a href="https://workman.jp/" target="_blank">ワークマン</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="dfashion" class="sports-checkbox" checked>
+                    <label for="dfashion"><a href="https://dfashion.docomo.ne.jp/" target="_blank">dファッション</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- テニス専門店 -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【テニス専門店】</span>
+                <div class="category-buttons">
                     <button class="select-category" data-category="tennis">選択</button>
-                    <button class="deselect-category" data-category="tennis">解除</button>
-                </span>
-                <span class="category-group">
-                    <label><input type="checkbox" id="minemura" class="tennis-checkbox" checked> <a href="https://minemura-net.com/" target="_blank">峰村商店</a></label>
-                    <label><input type="checkbox" id="windsor" class="tennis-checkbox" checked> <a href="https://www.windsorracket.co.jp/" target="_blank">ウィンザー</a></label>
-                    <label><input type="checkbox" id="tennisclassic" class="tennis-checkbox" checked> <a href="https://shop.tennisclassic.jp/" target="_blank">テニスクラシック</a></label>
-                    <label><input type="checkbox" id="lafino" class="tennis-checkbox" checked> <a href="https://www.lafino.co.jp/" target="_blank">ラフィノ</a></label>
-                    <label><input type="checkbox" id="kpitennis" class="tennis-checkbox" checked> <a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <div class="category-header">
-                    <span class="category-label">【フリマ】</span>
-                    <div class="category-buttons">
-                        <button class="select-category" data-category="flea">選択</button>
-                        <button class="deselect-category" data-category="flea">解除</button>
-                    </div>
+                    <button class="deselect-category secondary" data-category="tennis">解除</button>
                 </div>
-                <span class="category-group">
-                    <label><input type="checkbox" id="yahooAuctions" class="flea-checkbox" checked> <a href="https://auctions.yahoo.co.jp/" target="_blank">ヤフオク</a></label>
-                    <label><input type="checkbox" id="mercari" class="flea-checkbox" checked> <a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
-                </span>
             </div>
-
-            <div class="search-categories">
-                <div class="category-header">
-                    <span class="category-label">【情報】</span>
-                    <div class="category-buttons">
-                        <button class="select-category" data-category="info">選択</button>
-                        <button class="deselect-category" data-category="info">解除</button>
-                    </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="minemura" class="tennis-checkbox" checked>
+                    <label for="minemura"><a href="https://minemura-net.com/" target="_blank">峰村商店</a></label>
                 </div>
-                <span class="category-group">
-                    <label><input type="checkbox" id="saiyasune" class="info-checkbox" checked> <a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <div class="category-header">
-                    <span class="category-label">【スポーツ店】</span>
-                    <div class="category-buttons">
-                        <button class="select-category" data-category="sports">選択</button>
-                        <button class="deselect-category" data-category="sports">解除</button>
-                    </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="windsor" class="tennis-checkbox" checked>
+                    <label for="windsor"><a href="https://www.windsorracket.co.jp/" target="_blank">ウィンザー</a></label>
                 </div>
-                <span class="category-group">
-                    <label><input type="checkbox" id="supersports" class="sports-checkbox" checked> <a href="https://www.supersports.com/ja-jp/xebio/" target="_blank">ゼビオ</a></label>
-                    <label><input type="checkbox" id="alpen" class="sports-checkbox" checked> <a href="https://store.alpen-group.jp/" target="_blank">アルペン</a></label>
-                    <label><input type="checkbox" id="himaraya" class="sports-checkbox" checked> <a href="https://www.himaraya.co.jp/" target="_blank">ヒマラヤ</a></label>
-                    <label><input type="checkbox" id="victoria" class="sports-checkbox" checked> <a href="https://store.megasports.jp/" target="_blank">ヴィクトリア</a></label>
-                    <label><input type="checkbox" id="yodobashi" class="sports-checkbox" checked> <a href="https://www.yodobashi.com/" target="_blank">ヨドバシ</a></label>
-                    <label><input type="checkbox" id="biccamera" class="sports-checkbox" checked> <a href="https://www.biccamera.com/" target="_blank">ビックカメラ</a></label>
-                    <label><input type="checkbox" id="workman" class="sports-checkbox" checked> <a href="https://workman.jp/" target="_blank">ワークマン</a></label>
-                    <label><input type="checkbox" id="dfashion" class="sports-checkbox" checked> <a href="https://dfashion.docomo.ne.jp/" target="_blank">dファッション</a></label>
-                </span>
-            </div>
-
-            <div class="search-categories">
-                <div class="category-header">
-                    <span class="category-label">【テニス専門】</span>
-                    <div class="category-buttons">
-                        <button class="select-category" data-category="tennis">選択</button>
-                        <button class="deselect-category" data-category="tennis">解除</button>
-                    </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="tennisclassic" class="tennis-checkbox" checked>
+                    <label for="tennisclassic"><a href="https://shop.tennisclassic.jp/" target="_blank">テニスクラシック</a></label>
                 </div>
-                <span class="category-group">
-                    <label><input type="checkbox" id="minemura" class="tennis-checkbox" checked> <a href="https://minemura-net.com/" target="_blank">峰村商店</a></label>
-                    <label><input type="checkbox" id="windsor" class="tennis-checkbox" checked> <a href="https://www.windsorracket.co.jp/" target="_blank">ウィンザー</a></label>
-                    <label><input type="checkbox" id="tennisclassic" class="tennis-checkbox" checked> <a href="https://shop.tennisclassic.jp/" target="_blank">テニスクラシック</a></label>
-                    <label><input type="checkbox" id="lafino" class="tennis-checkbox" checked> <a href="https://www.lafino.co.jp/" target="_blank">ラフィノ</a></label>
-                    <label><input type="checkbox" id="kpitennis" class="tennis-checkbox" checked> <a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
-                </span>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lafino" class="tennis-checkbox" checked>
+                    <label for="lafino"><a href="https://www.lafino.co.jp/" target="_blank">ラフィノ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="kpitennis" class="tennis-checkbox" checked>
+                    <label for="kpitennis"><a href="https://kpitennis.com/" target="_blank">KPIテニス</a></label>
+                </div>
             </div>
         </div>
-
+        
         <h2>その他オプション</h2>
-        <div id="otherOptions">
-            <label><input type="checkbox" id="enterToSearch" checked> エンターキーで検索</label>
-            <label><input type="checkbox" id="recordHistory" checked> 検索履歴を記録する</label>
+        <div class="options-section">
+            <label>
+                <input type="checkbox" id="enterToSearch" checked>
+                エンターキーで検索
+            </label>
+            <label>
+                <input type="checkbox" id="recordHistory" checked>
+                検索履歴を記録する
+            </label>
         </div>
-
-        <div id="links">
-            <a href="https://gemini.google.com/app?hl=ja" target="_blank">Gemini</a>
-            <a href="https://aistudio.google.com/app/prompts/new_chat" target="_blank">AI Studio</a>
-            <a href="https://claude.ai/new" target="_blank">Claude</a>
-            <a href="https://mapify.so/ja/app/new" target="_blank">Mapify</a>
+        
+        <div class="history-section">
+            <h2>検索履歴</h2>
+            <button id="clearHistory" class="danger">検索履歴をクリア</button>
+            <ul id="historyList"></ul>
         </div>
-
-        <div id="maintenance">
-            <a href="https://github.com/anydhjyn1/anydhjyn1.github.io/edit/main/index.html" target="_blank">メンテナンス</a>
-            <a href="https://anydhjyn1.github.io/imagesearch/" target="_blank">画像検索</a>
-            <a href="https://anydhjyn1.github.io/infosearch/" target="_blank">情報検索</a>
+        
+        <div class="links-section">
+            <a href="https://github.com/" target="_blank">メンテナンス</a>
+            <a href="#" target="_blank">画像検索</a>
+            <a href="#" target="_blank">情報検索</a>
         </div>
-
-        <div id="message"></div>
     </div>
-
-    <div id="history-panel">
-        <h2>検索履歴</h2>
-        <button id="clearHistory">検索履歴をクリア</button>
-        <ul id="historyList"></ul>
-    </div>
-
+    
+    <div id="message"></div>
+    
     <script>
+        // プリセット設定
+        const presets = {
+            'new-purchase': {
+                name: '新品購入',
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping']
+            },
+            'lowest-price': {
+                name: '最低価格調査',
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping', 'surugaya', 'janpara', 'yahooAuctions', 'mercari']
+            }
+        };
+        
+        // 検索エンジン設定
+        const searchEngines = {
+            // 情報サイト
+            saiyasune: { url: 'https://www.saiyasune.com/I1W{query}.html', isAI: false },
+            
+            // 検索エンジン
+            google: { url: 'https://www.google.com/search?q={query}', isAI: false },
+            yahoo: { url: 'https://search.yahoo.co.jp/search?p={query}', isAI: false },
+            
+            // AI検索
+            perplexity: { url: 'https://www.perplexity.ai/search?q={query}', isAI: true },
+            genspark: { url: 'https://www.genspark.ai/search?query={query}', isAI: true },
+            felo: { url: 'https://felo.ai/search?q={query}', isAI: true },
+            chatgpt: { url: 'https://chatgpt.com/?q={query}', isAI: true },
+            claude: { url: 'https://claude.ai/new?q={query}', isAI: true },
+            
+            // 通販サイト
+            amazon: { url: 'https://www.amazon.co.jp/s?k={query}', isAI: false },
+            rakuten: { url: 'https://search.rakuten.co.jp/search/mall/{query}', isAI: false },
+            yahooShopping: { url: 'https://shopping.yahoo.co.jp/search?p={query}', isAI: false },
+            dshopping: { url: 'https://dshopping.docomo.ne.jp/products_search?keyword={query}', isAI: false },
+            
+            // 中古サイト
+            surugaya: { url: 'https://www.suruga-ya.jp/search?search_word={query}', isAI: false },
+            janpara: { url: 'https://www.janpara.co.jp/sale/search/result/?KEYWORDS={query}', isAI: false },
+            
+            // フリマサイト
+            yahooAuctions: { url: 'https://auctions.yahoo.co.jp/search/search?p={query}', isAI: false },
+            mercari: { url: 'https://www.mercari.com/jp/search/?keyword={query}', isAI: false },
+            
+            // 中国サイト
+            temu: { url: 'https://www.temu.com/search_result.html?search_key={query}', isAI: false },
+            aliexpress: { url: 'https://ja.aliexpress.com/w/wholesale-{query}.html', isAI: false },
+            
+            // スポーツ店
+            supersports: { url: 'https://www.supersports.com/ja-jp/xebio/products/?keyword={query}', isAI: false },
+            alpen: { url: 'https://store.alpen-group.jp/disp/CSfContentsPLP.jsp?q2={query}', isAI: false },
+            himaraya: { url: 'https://www.himaraya.co.jp/search?q={query}', isAI: false },
+            victoria: { url: 'https://store.megasports.jp/s/sa/search?fr={query}', isAI: false },
+            yodobashi: { url: 'https://www.yodobashi.com/?word={query}', isAI: false },
+            biccamera: { url: 'https://www.biccamera.com/bc/category/?q={query}', isAI: false },
+            workman: { url: 'https://workman.jp/shop/goods/search.aspx?q={query}', isAI: false },
+            dfashion: { url: 'https://dfashion.docomo.ne.jp/fw/list/tr_f-fw_{query}', isAI: false },
+            
+            // テニス専門店
+            minemura: { url: 'https://minemura-net.com/p/search?keyword={query}', isAI: false },
+            windsor: { url: 'https://www.windsorracket.co.jp/shop/goods/search.aspx?keyword={query}', isAI: false },
+            tennisclassic: { url: 'https://shop.tennisclassic.jp/products/list.php?name={query}', isAI: false },
+            lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false },
+            kpitennis: { url: 'https://kpitennis.com/products/list?name={query}', isAI: false }
+        };
+        
+        // 設定の保存
         function saveSettings() {
             const settings = {
-                engines: {
-                    google: document.getElementById('google').checked,
-                    yahoo: document.getElementById('yahoo').checked,
-                    perplexity: document.getElementById('perplexity').checked,
-                    genspark: document.getElementById('genspark').checked,
-                    felo: document.getElementById('felo').checked,
-                    chatgpt: document.getElementById('chatgpt').checked,
-                    claude: document.getElementById('claude').checked,
-                    amazon: document.getElementById('amazon').checked,
-                    rakuten: document.getElementById('rakuten').checked,
-                    yahooShopping: document.getElementById('yahooShopping').checked,
-                    yahooAuctions: document.getElementById('yahooAuctions').checked,
-                    mercari: document.getElementById('mercari').checked,
-                    surugaya: document.getElementById('surugaya').checked,
-                    dshopping: document.getElementById('dshopping').checked,
-                    saiyasune: document.getElementById('saiyasune').checked,
-                    janpara: document.getElementById('janpara').checked,
-                    temu: document.getElementById('temu').checked,
-                    // スポーツ店
-                    supersports: document.getElementById('supersports').checked,
-                    alpen: document.getElementById('alpen').checked,
-                    himaraya: document.getElementById('himaraya').checked,
-                    victoria: document.getElementById('victoria').checked,
-                    yodobashi: document.getElementById('yodobashi').checked,
-                    biccamera: document.getElementById('biccamera').checked,
-                    workman: document.getElementById('workman').checked,
-                    dfashion: document.getElementById('dfashion').checked,
-                    // テニス専門店
-                    minemura: document.getElementById('minemura').checked,
-                    windsor: document.getElementById('windsor').checked,
-                    tennisclassic: document.getElementById('tennisclassic').checked,
-                    lafino: document.getElementById('lafino').checked,
-                    kpitennis: document.getElementById('kpitennis').checked
-                },
+                engines: {},
                 options: {
                     enterToSearch: document.getElementById('enterToSearch').checked,
                     recordHistory: document.getElementById('recordHistory').checked
                 }
             };
+            
+            Object.keys(searchEngines).forEach(engine => {
+                const checkbox = document.getElementById(engine);
+                if (checkbox) {
+                    settings.engines[engine] = checkbox.checked;
+                }
+            });
+            
             localStorage.setItem('searchSettings', JSON.stringify(settings));
         }
-
+        
+        // 設定の読み込み
         function loadSettings() {
             const settings = JSON.parse(localStorage.getItem('searchSettings'));
             if (settings) {
@@ -355,191 +639,77 @@
                 document.getElementById('recordHistory').checked = settings.options.recordHistory;
             }
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchQuery = document.getElementById('searchQuery');
-            const searchAllButton = document.getElementById('searchAll');
-            const copyQueryButton = document.getElementById('copyQuery');
-            const clearQueryButton = document.getElementById('clearQuery');
-            const clearHistoryButton = document.getElementById('clearHistory');
-            const selectAllButton = document.getElementById('selectAll');
-            const deselectAllButton = document.getElementById('deselectAll');
-
-            const checkboxes = document.querySelectorAll('#engineOptions input[type="checkbox"], #otherOptions input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', saveSettings);
-            });
-
-            searchAllButton.addEventListener('click', searchAll);
-            copyQueryButton.addEventListener('click', copyQuery);
-            clearQueryButton.addEventListener('click', clearQuery);
-            clearHistoryButton.addEventListener('click', clearHistory);
-            
-            // 全選択・全解除ボタンのイベントリスナー
-            selectAllButton.addEventListener('click', function() {
-                const engineCheckboxes = document.querySelectorAll('#engineOptions input[type="checkbox"]');
-                engineCheckboxes.forEach(checkbox => {
-                    checkbox.checked = true;
-                });
-                saveSettings();
-                showMessage('すべてのサイトを選択しました');
-            });
-            
-            deselectAllButton.addEventListener('click', function() {
-                const engineCheckboxes = document.querySelectorAll('#engineOptions input[type="checkbox"]');
-                engineCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                saveSettings();
-                showMessage('すべてのサイトの選択を解除しました');
-            });
-
-            // カテゴリーごとの選択・解除ボタンのイベントリスナーを設定
-            document.querySelectorAll('.select-category').forEach(button => {
-                button.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    const checkboxes = document.querySelectorAll(`.${category}-checkbox`);
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = true;
-                    });
-                    saveSettings();
-                    showMessage(`【${getCategoryLabel(category)}】カテゴリーのすべてのサイトを選択しました`);
-                });
-            });
-
-            document.querySelectorAll('.deselect-category').forEach(button => {
-                button.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    const checkboxes = document.querySelectorAll(`.${category}-checkbox`);
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                    saveSettings();
-                    showMessage(`【${getCategoryLabel(category)}】カテゴリーのすべてのサイトの選択を解除しました`);
-                });
-            });
-
-            // カテゴリー名を日本語で取得する関数
-            function getCategoryLabel(category) {
-                const categoryLabels = {
-                    'search': '検索エンジン',
-                    'ai': 'AI',
-                    'shopping': '通販',
-                    'flea': 'フリマ',
-                    'info': '情報',
-                    'sports': 'スポーツ店',
-                    'tennis': 'テニス専門'
-                };
-                return categoryLabels[category] || category;
-            }
-
-            searchQuery.addEventListener('keyup', function(event) {
-                if (event.key === 'Enter' && document.getElementById('enterToSearch').checked) {
-                    searchAll();
-                }
-            });
-
-            loadSettings();
-            loadHistory();
-        });
-
-        function getAISearchQuery(query) {
-            return `${query} について、特徴と価格と良い評判と悪い評判を教えてください。`;
-        }
-
-        function formatQuery(query) {
-            return query.replace(/[\s　]/g, '+');
-        }
-
-        function searchAll() {
-            const baseQuery = formatQuery(document.getElementById('searchQuery').value);
-            const aiQuery = getAISearchQuery(baseQuery);
-            const engines = [
-                // 検索エンジン
-                {id: 'google', url: `https://www.google.com/search?q=${baseQuery}`},
-                {id: 'yahoo', url: `https://search.yahoo.co.jp/search?p=${baseQuery}`},
-                
-                // AI検索
-                {id: 'perplexity', url: `https://www.perplexity.ai/search?q=${aiQuery}`},
-                {id: 'genspark', url: `https://www.genspark.ai/search?query=${aiQuery}`},
-                {id: 'felo', url: `https://felo.ai/search?q=${aiQuery}`},
-                {id: 'chatgpt', url: `https://chatgpt.com/?q=${aiQuery}`},
-                {id: 'claude', url: `https://claude.ai/new?q=${aiQuery}`},
-                
-                // 通販サイト
-                {id: 'amazon', url: `https://www.amazon.co.jp/s?k=${baseQuery}`},
-                {id: 'rakuten', url: `https://search.rakuten.co.jp/search/mall/${baseQuery}`},
-                {id: 'yahooShopping', url: `https://shopping.yahoo.co.jp/search?p=${baseQuery}`},
-                {id: 'dshopping', url: `https://dshopping.docomo.ne.jp/products_search?keyword=${baseQuery}`},
-                {id: 'surugaya', url: `https://www.suruga-ya.jp/search?search_word=${baseQuery}`},
-                {id: 'janpara', url: `https://www.janpara.co.jp/sale/search/result/?KEYWORDS=${baseQuery}`},
-                {id: 'temu', url: `https://www.temu.com/search_result.html?search_key=${baseQuery}`},
-                
-                // フリマサイト
-                {id: 'yahooAuctions', url: `https://auctions.yahoo.co.jp/search/search?p=${baseQuery}`},
-                {id: 'mercari', url: `https://www.mercari.com/jp/search/?keyword=${baseQuery}`},
-                
-                // 情報サイト
-                {id: 'saiyasune', url: `https://www.saiyasune.com/I1W${baseQuery}.html`},
-                
-                // スポーツ店
-                {id: 'supersports', url: `https://www.supersports.com/ja-jp/xebio/products/?keyword=${baseQuery}`},
-                {id: 'alpen', url: `https://store.alpen-group.jp/disp/CSfContentsPLP.jsp?baseCatTp=1&dispNo=001069&q2=${baseQuery}&summaryInfoBaseCatTp=1`},
-                {id: 'himaraya', url: `https://www.himaraya.co.jp/search?q=${baseQuery}&path_fs=&sort=Score%2Cnumber9&searchbox=1`},
-                {id: 'victoria', url: `https://store.megasports.jp/s/sa/search?fr=${baseQuery}&pl=&pu=&dl=&du=`},
-                {id: 'yodobashi', url: `https://www.yodobashi.com/?word=${baseQuery}`},
-                {id: 'biccamera', url: `https://www.biccamera.com/bc/category/?q=${baseQuery}`},
-                {id: 'workman', url: `https://workman.jp/shop/goods/search.aspx?q=${baseQuery}`},
-                {id: 'dfashion', url: `https://dfashion.docomo.ne.jp/fw/list/tr_f-fw_${baseQuery}`},
-                
-                // テニス専門店
-                {id: 'minemura', url: `https://minemura-net.com/p/search?keyword=${baseQuery}`},
-                {id: 'windsor', url: `https://www.windsorracket.co.jp/shop/goods/search.aspx?search=x&keyword=${baseQuery}&search=search`},
-                {id: 'tennisclassic', url: `https://shop.tennisclassic.jp/products/list.php?mode=search&name=${baseQuery}`},
-                {id: 'lafino', url: `https://www.lafino.co.jp/p/search?keyword=${baseQuery}`},
-                {id: 'kpitennis', url: `https://kpitennis.com/products/list?name=${baseQuery}`}
-            ];
-
-            engines.forEach(engine => {
-                if (document.getElementById(engine.id).checked) {
-                    window.open(engine.url, '_blank');
-                }
-            });
-
-            if (document.getElementById('recordHistory').checked) {
-                addToHistory(document.getElementById('searchQuery').value);
-            }
-            saveSettings();
-        }
-
-        function copyQuery() {
-            const query = document.getElementById('searchQuery');
-            query.select();
-            document.execCommand('copy');
-            showMessage('検索語句をクリップボードにコピーしました。');
-        }
-
-        function clearQuery() {
-            document.getElementById('searchQuery').value = '';
-            showMessage('検索語句をクリアしました。');
-        }
-
+        
+        // メッセージ表示
         function showMessage(msg) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = msg;
+            messageDiv.classList.add('show');
             setTimeout(() => {
-                messageDiv.textContent = '';
+                messageDiv.classList.remove('show');
             }, 3000);
         }
-
+        
+        // 検索語句のフォーマット
+        function formatQuery(query) {
+            return encodeURIComponent(query);
+        }
+        
+        // AI検索用のクエリ生成
+        function getAIQuery(query) {
+            return `${query} について、特徴と価格と良い評判と悪い評判を教えてください。`;
+        }
+        
+        // 検索実行
+        function searchAll() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                showMessage('検索語句を入力してください');
+                return;
+            }
+            
+            Object.keys(searchEngines).forEach(engineId => {
+                const checkbox = document.getElementById(engineId);
+                if (checkbox && checkbox.checked) {
+                    const engine = searchEngines[engineId];
+                    const searchQuery = engine.isAI ? getAIQuery(query) : query;
+                    const formattedQuery = formatQuery(searchQuery);
+                    const url = engine.url.replace('{query}', formattedQuery);
+                    window.open(url, '_blank');
+                }
+            });
+            
+            if (document.getElementById('recordHistory').checked) {
+                addToHistory(query);
+            }
+            saveSettings();
+        }
+        
+        // 検索語句のコピー
+        function copyQuery() {
+            const queryInput = document.getElementById('searchQuery');
+            queryInput.select();
+            document.execCommand('copy');
+            showMessage('検索語句をクリップボードにコピーしました');
+        }
+        
+        // 検索語句のクリア
+        function clearQuery() {
+            document.getElementById('searchQuery').value = '';
+            showMessage('検索語句をクリアしました');
+        }
+        
+        // 履歴に追加
         function addToHistory(query) {
             let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+            history = history.filter(item => item !== query);
             history.unshift(query);
             history = history.slice(0, 10);
             localStorage.setItem('searchHistory', JSON.stringify(history));
             loadHistory();
         }
-
+        
+        // 履歴の読み込み
         function loadHistory() {
             const historyList = document.getElementById('historyList');
             const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
@@ -548,26 +718,121 @@
                 const li = document.createElement('li');
                 li.textContent = query;
                 li.addEventListener('click', () => {
-                    // 検索ボックスに履歴を入力
-                    const searchBox = document.getElementById('searchQuery');
-                    searchBox.value = query;
-                    
-                    // カーソルを文末に移動
-                    searchBox.focus();
-                    searchBox.setSelectionRange(searchBox.value.length, searchBox.value.length);
-                    
-                    // 現在のチェックボックスの設定で検索を実行
+                    document.getElementById('searchQuery').value = query;
                     searchAll();
                 });
                 historyList.appendChild(li);
             });
         }
-
+        
+        // 履歴のクリア
         function clearHistory() {
             localStorage.removeItem('searchHistory');
             loadHistory();
-            showMessage('検索履歴をクリアしました。');
+            showMessage('検索履歴をクリアしました');
         }
+        
+        // プリセット適用
+        function applyPreset(presetId) {
+            // 全てのチェックボックスを一旦解除
+            Object.keys(searchEngines).forEach(engine => {
+                const checkbox = document.getElementById(engine);
+                if (checkbox) {
+                    checkbox.checked = false;
+                }
+            });
+            
+            // プリセットのサイトをチェック
+            if (presets[presetId]) {
+                presets[presetId].sites.forEach(site => {
+                    const checkbox = document.getElementById(site);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+                showMessage(`${presets[presetId].name}プリセットを適用しました`);
+            }
+            
+            saveSettings();
+        }
+        
+        // イベントリスナーの設定
+        document.addEventListener('DOMContentLoaded', function() {
+            // ボタンのイベントリスナー
+            document.getElementById('searchAll').addEventListener('click', searchAll);
+            document.getElementById('copyQuery').addEventListener('click', copyQuery);
+            document.getElementById('clearQuery').addEventListener('click', clearQuery);
+            document.getElementById('clearHistory').addEventListener('click', clearHistory);
+            
+            // 全選択・全解除
+            document.getElementById('selectAll').addEventListener('click', function() {
+                Object.keys(searchEngines).forEach(engine => {
+                    const checkbox = document.getElementById(engine);
+                    if (checkbox) checkbox.checked = true;
+                });
+                saveSettings();
+                showMessage('すべてのサイトを選択しました');
+            });
+            
+            document.getElementById('deselectAll').addEventListener('click', function() {
+                Object.keys(searchEngines).forEach(engine => {
+                    const checkbox = document.getElementById(engine);
+                    if (checkbox) checkbox.checked = false;
+                });
+                saveSettings();
+                showMessage('すべてのサイトの選択を解除しました');
+            });
+            
+            // カテゴリー別選択・解除
+            document.querySelectorAll('.select-category').forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    const checkboxes = document.querySelectorAll(`.${category}-checkbox`);
+                    checkboxes.forEach(checkbox => checkbox.checked = true);
+                    saveSettings();
+                    showMessage(`カテゴリーのすべてのサイトを選択しました`);
+                });
+            });
+            
+            document.querySelectorAll('.deselect-category').forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    const checkboxes = document.querySelectorAll(`.${category}-checkbox`);
+                    checkboxes.forEach(checkbox => checkbox.checked = false);
+                    saveSettings();
+                    showMessage(`カテゴリーのすべてのサイトの選択を解除しました`);
+                });
+            });
+            
+            // プリセットボタン
+            document.querySelectorAll('.preset-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const preset = this.getAttribute('data-preset');
+                    if (preset === 'clear-all') {
+                        document.getElementById('deselectAll').click();
+                    } else {
+                        applyPreset(preset);
+                    }
+                });
+            });
+            
+            // チェックボックスの変更を保存
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', saveSettings);
+            });
+            
+            // エンターキーで検索
+            document.getElementById('searchQuery').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter' && document.getElementById('enterToSearch').checked) {
+                    searchAll();
+                }
+            });
+            
+            // 設定と履歴の読み込み
+            loadSettings();
+            loadHistory();
+        });
     </script>
 </body>
 </html>
