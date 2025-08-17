@@ -331,18 +331,14 @@
         
         <h2>プリセット選択</h2>
         <div class="preset-buttons">
+            <button class="preset-button" data-preset="purchase-consideration">購入検討</button>
             <button class="preset-button" data-preset="new-purchase">新品購入</button>
             <button class="preset-button" data-preset="new-used-purchase">新品中古購入</button>
-            <button class="preset-button" data-preset="purchase-consideration">購入検討</button>
+            <button class="preset-button" data-preset="select-all">全て選択</button>
             <button class="preset-button" data-preset="clear-all">全て解除</button>
         </div>
         
         <h2>検索サイト選択</h2>
-        
-        <div class="button-group">
-            <button id="selectAll">全て選択</button>
-            <button id="deselectAll" class="secondary">全て解除</button>
-        </div>
         
         <!-- 情報サイト -->
         <div class="category-section">
@@ -1108,24 +1104,7 @@
                 }
             });
             
-            // 全選択・全解除
-            document.getElementById('selectAll').addEventListener('click', function() {
-                Object.keys(searchEngines).forEach(engine => {
-                    const checkbox = document.getElementById(engine);
-                    if (checkbox) checkbox.checked = true;
-                });
-                saveSettings();
-                showMessage('すべてのサイトを選択しました');
-            });
-            
-            document.getElementById('deselectAll').addEventListener('click', function() {
-                Object.keys(searchEngines).forEach(engine => {
-                    const checkbox = document.getElementById(engine);
-                    if (checkbox) checkbox.checked = false;
-                });
-                saveSettings();
-                showMessage('すべてのサイトの選択を解除しました');
-            });
+            // プリセットボタンの中で「全て選択」「全て解除」を処理
             
             // カテゴリー別選択・解除
             document.querySelectorAll('.select-category').forEach(button => {
@@ -1153,7 +1132,21 @@
                 button.addEventListener('click', function() {
                     const preset = this.getAttribute('data-preset');
                     if (preset === 'clear-all') {
-                        document.getElementById('deselectAll').click();
+                        // 全て解除
+                        Object.keys(searchEngines).forEach(engine => {
+                            const checkbox = document.getElementById(engine);
+                            if (checkbox) checkbox.checked = false;
+                        });
+                        saveSettings();
+                        showMessage('すべてのサイトの選択を解除しました');
+                    } else if (preset === 'select-all') {
+                        // 全て選択
+                        Object.keys(searchEngines).forEach(engine => {
+                            const checkbox = document.getElementById(engine);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                        saveSettings();
+                        showMessage('すべてのサイトを選択しました');
                     } else {
                         applyPreset(preset);
                     }
