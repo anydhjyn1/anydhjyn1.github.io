@@ -382,65 +382,6 @@
             </div>
         </div>
         
-        <!-- AI検索 -->
-        <div class="category-section">
-            <div class="category-header">
-                <span class="category-label">【AI検索】</span>
-                <div class="category-buttons">
-                    <button class="select-category" data-category="ai">選択</button>
-                    <button class="deselect-category secondary" data-category="ai">解除</button>
-                </div>
-            </div>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="perplexity" class="ai-checkbox" checked>
-                    <label for="perplexity"><a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="genspark" class="ai-checkbox" checked>
-                    <label for="genspark"><a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="felo" class="ai-checkbox" checked>
-                    <label for="felo"><a href="https://felo.ai" target="_blank">Felo</a></label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="chatgpt" class="ai-checkbox" checked>
-                    <label for="chatgpt"><a href="https://chatgpt.com" target="_blank">ChatGPT</a></label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="claude" class="ai-checkbox" checked>
-                    <label for="claude"><a href="https://claude.ai" target="_blank">Claude</a></label>
-                </div>
-            </div>
-            
-            <!-- AI検索用テキスト設定 -->
-            <div class="ai-text-section">
-                <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px;">AI検索用追加テキスト</h3>
-                <div class="ai-text-controls">
-                    <select id="aiTextPreset">
-                        <option value="default">デフォルト（特徴・価格・評判）</option>
-                        <option value="detailed">詳細分析（代替品・比較含む）</option>
-                        <option value="custom1">カスタム1</option>
-                        <option value="custom2">カスタム2</option>
-                        <option value="custom3">カスタム3</option>
-                    </select>
-                    <button id="resetAiText" class="secondary">初期値に戻す</button>
-                </div>
-                <textarea id="aiQueryText">について、特徴と価格と良い評判と悪い評判を教えてください。</textarea>
-                
-                <!-- カスタムテキスト保存機能 -->
-                <div class="custom-text-section">
-                    <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 13px;">カスタムテキストの保存</h4>
-                    <div class="custom-text-controls">
-                        <input type="text" id="customTextInput" placeholder="カスタムテキストを入力">
-                        <button id="saveCustomText">保存</button>
-                    </div>
-                    <div id="customTextList" class="custom-text-list"></div>
-                </div>
-            </div>
-        </div>
-        
         <!-- 通販サイト -->
         <div class="category-section">
             <div class="category-header">
@@ -487,6 +428,31 @@
                 <div class="checkbox-item">
                     <input type="checkbox" id="janpara" class="used-checkbox" checked>
                     <label for="janpara"><a href="https://www.janpara.co.jp/" target="_blank">ジャンパラ</a></label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 本 -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【本】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="book">選択</button>
+                    <button class="deselect-category secondary" data-category="book">解除</button>
+                </div>
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="netoff" class="book-checkbox" checked>
+                    <label for="netoff"><a href="https://www.netoff.co.jp/" target="_blank">ネットオフ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="bookoffonline" class="book-checkbox" checked>
+                    <label for="bookoffonline"><a href="https://www.bookoffonline.co.jp/" target="_blank">ブックオフオンライン</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="valuebooks" class="book-checkbox" checked>
+                    <label for="valuebooks"><a href="https://www.valuebooks.jp/" target="_blank">バリューブックス</a></label>
                 </div>
             </div>
         </div>
@@ -611,6 +577,88 @@
             </div>
         </div>
         
+        <!-- AI検索 -->
+        <div class="category-section">
+            <div class="category-header">
+                <span class="category-label">【AI検索】</span>
+                <div class="category-buttons">
+                    <button class="select-category" data-category="ai">選択</button>
+                    <button class="deselect-category secondary" data-category="ai">解除</button>
+                </div>
+            </div>
+            
+            <!-- モード選択ラジオボタン -->
+            <div class="ai-mode-selection" style="margin-bottom: 15px; padding: 10px; background-color: #fff; border-radius: 5px;">
+                <label style="margin-right: 20px; font-weight: bold;">
+                    <input type="radio" name="aiMode" value="standard" checked>
+                    標準
+                </label>
+                <label style="font-weight: bold;">
+                    <input type="radio" name="aiMode" value="review">
+                    検討用
+                </label>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="perplexity" class="ai-checkbox" checked>
+                    <label for="perplexity"><a href="https://www.perplexity.ai" target="_blank">Perplexity</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="genspark" class="ai-checkbox" checked>
+                    <label for="genspark"><a href="https://www.genspark.ai" target="_blank">GenSpark</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="felo" class="ai-checkbox" checked>
+                    <label for="felo"><a href="https://felo.ai" target="_blank">Felo</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="chatgpt" class="ai-checkbox" checked>
+                    <label for="chatgpt"><a href="https://chatgpt.com" target="_blank">ChatGPT</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="claude" class="ai-checkbox" checked>
+                    <label for="claude"><a href="https://claude.ai" target="_blank">Claude</a></label>
+                </div>
+            </div>
+            
+            <!-- AI検索用テキスト設定 -->
+            <div class="ai-text-section" id="aiTextSection">
+                <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px;">AI検索用追加テキスト</h3>
+                <div class="ai-text-controls">
+                    <select id="aiTextPreset">
+                        <option value="default">デフォルト（特徴・価格・評判）</option>
+                        <option value="detailed">詳細分析（代替品・比較含む）</option>
+                        <option value="custom1">カスタム1</option>
+                        <option value="custom2">カスタム2</option>
+                        <option value="custom3">カスタム3</option>
+                    </select>
+                    <button id="resetAiText" class="secondary">初期値に戻す</button>
+                </div>
+                <textarea id="aiQueryText">について、特徴と価格と良い評判と悪い評判を教えてください。</textarea>
+                
+                <!-- カスタムテキスト保存機能 -->
+                <div class="custom-text-section">
+                    <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 13px;">カスタムテキストの保存</h4>
+                    <div class="custom-text-controls">
+                        <input type="text" id="customTextInput" placeholder="カスタムテキストを入力">
+                        <button id="saveCustomText">保存</button>
+                    </div>
+                    <div id="customTextList" class="custom-text-list"></div>
+                </div>
+            </div>
+            
+            <!-- 検討用モードの説明 -->
+            <div id="reviewModeInfo" style="display: none; margin-top: 10px; padding: 10px; background-color: #fff3cd; border-radius: 5px; font-size: 14px;">
+                <strong>検討用モード：</strong>各AIサービスに以下のテキストが適用されます<br>
+                • Perplexity: 特徴と価格と良い評判と悪い評判<br>
+                • GenSpark: ラインナップや類似商品と価格<br>
+                • Felo: 長所短所<br>
+                • ChatGPT: 注意点<br>
+                • Claude: 代替案
+            </div>
+        </div>
+        
         <h2>その他オプション</h2>
         <div class="options-section">
             <label>
@@ -645,6 +693,15 @@
             detailed: 'について、特徴と価格と良い評判と悪い評判を教えてください。注意点やおすすめの代替手段、代替商品を教えてください。類似商品やラインナップがある場合、それぞれを比較してください。'
         };
         
+        // 検討用モード用のAI別テキスト
+        const reviewModeTexts = {
+            perplexity: 'について、特徴と価格と良い評判と悪い評判を教えてください。',
+            genspark: 'について、ラインナップや類似商品と価格を教えてください。',
+            felo: 'について、長所短所を教えてください。',
+            chatgpt: 'について、注意点を教えてください。',
+            claude: 'について、代替案を教えてください。'
+        };
+        
         // プリセット設定
         const presets = {
             'new-purchase': {
@@ -654,7 +711,7 @@
             },
             'new-used-purchase': {
                 name: '新品中古購入',
-                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping', 'surugaya', 'janpara', 'yahooAuctions', 'mercari'],
+                sites: ['saiyasune', 'google', 'yahoo', 'perplexity', 'genspark', 'felo', 'chatgpt', 'claude', 'amazon', 'rakuten', 'yahooShopping', 'surugaya', 'janpara', 'netoff', 'bookoffonline', 'valuebooks', 'yahooAuctions', 'mercari'],
                 aiText: aiTextPresets.default
             },
             'purchase-consideration': {
@@ -713,7 +770,12 @@
             minemura: { url: 'https://minemura-net.com/p/search?keyword={query}', isAI: false },
             windsor: { url: 'https://www.windsorracket.co.jp/shop/goods/search.aspx?keyword={query}', isAI: false },
             tennisclassic: { url: 'https://shop.tennisclassic.jp/products/list.php?name={query}', isAI: false },
-            lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false }
+            lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false },
+            
+            // 本
+            netoff: { url: 'https://www.netoff.co.jp/disp/CSfDispListPage_001.jsp?dso=1&stss={query}', isAI: false },
+            bookoffonline: { url: 'https://www.bookoffonline.co.jp/display/L001,q={query}', isAI: false },
+            valuebooks: { url: 'https://www.valuebooks.jp/search_result.html?keyword={query}', isAI: false }
         };
         
         // 設定の保存
@@ -865,9 +927,17 @@
         }
         
         // AI検索用のクエリ生成
-        function getAIQuery(query) {
-            const aiText = document.getElementById('aiQueryText').value;
-            return `${query} ${aiText}`;
+        function getAIQuery(query, engineId) {
+            const aiMode = document.querySelector('input[name="aiMode"]:checked').value;
+            
+            if (aiMode === 'review' && reviewModeTexts[engineId]) {
+                // 検討用モードの場合、各AIサービス別のテキストを使用
+                return `${query} ${reviewModeTexts[engineId]}`;
+            } else {
+                // 標準モードの場合、共通テキストを使用
+                const aiText = document.getElementById('aiQueryText').value;
+                return `${query} ${aiText}`;
+            }
         }
         
         // 検索実行
@@ -882,7 +952,7 @@
                 const checkbox = document.getElementById(engineId);
                 if (checkbox && checkbox.checked) {
                     const engine = searchEngines[engineId];
-                    const searchQuery = engine.isAI ? getAIQuery(query) : query;
+                    const searchQuery = engine.isAI ? getAIQuery(query, engineId) : query;
                     const formattedQuery = formatQuery(searchQuery);
                     const url = engine.url.replace('{query}', formattedQuery);
                     window.open(url, '_blank');
@@ -970,6 +1040,33 @@
             }
             
             saveSettings();
+        }
+        
+        // AIモード切り替え処理
+        function handleAIModeChange() {
+            const aiMode = document.querySelector('input[name="aiMode"]:checked').value;
+            const aiCheckboxes = document.querySelectorAll('.ai-checkbox');
+            const aiTextSection = document.getElementById('aiTextSection');
+            const reviewModeInfo = document.getElementById('reviewModeInfo');
+            
+            if (aiMode === 'review') {
+                // 検討用モード
+                aiCheckboxes.forEach(checkbox => {
+                    checkbox.checked = true;
+                    checkbox.disabled = true;
+                    checkbox.parentElement.style.opacity = '0.6';
+                });
+                aiTextSection.style.display = 'none';
+                reviewModeInfo.style.display = 'block';
+            } else {
+                // 標準モード
+                aiCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = false;
+                    checkbox.parentElement.style.opacity = '1';
+                });
+                aiTextSection.style.display = 'block';
+                reviewModeInfo.style.display = 'none';
+            }
         }
         
         // イベントリスナーの設定
@@ -1076,11 +1173,19 @@
                 }
             });
             
+            // AIモードラジオボタンのイベントリスナー
+            document.querySelectorAll('input[name="aiMode"]').forEach(radio => {
+                radio.addEventListener('change', handleAIModeChange);
+            });
+            
             // 設定と履歴の読み込み
             loadSettings();
             loadHistory();
             updateCustomTextList();
             updateAiTextPresetDropdown();
+            
+            // 初期状態でAIモードを確認
+            handleAIModeChange();
         });
     </script>
 </body>
