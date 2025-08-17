@@ -769,9 +769,9 @@
             lafino: { url: 'https://www.lafino.co.jp/p/search?keyword={query}', isAI: false },
             
             // 本
-            netoff: { url: 'https://www.netoff.co.jp/disp/CSfDispListPage_001.jsp?dso=1&stss={query}', isAI: false },
+            netoff: { url: 'https://www.netoff.co.jp/cmdtyallsearch/?cat=&cname=すべてのカテゴリー&word={query}', isAI: false },
             bookoffonline: { url: 'https://shopping.bookoff.co.jp/search/keyword/{query}', isAI: false },
-            valuebooks: { url: 'https://www.valuebooks.jp/search_result.html?keyword={query}', isAI: false }
+            valuebooks: { url: 'https://www.valuebooks.jp/search?keyword={query}', isAI: false, needsSpecialFormat: true }
         };
         
         // 設定の保存
@@ -950,7 +950,15 @@
                     const engine = searchEngines[engineId];
                     const searchQuery = engine.isAI ? getAIQuery(query, engineId) : query;
                     const formattedQuery = formatQuery(searchQuery);
-                    const url = engine.url.replace('{query}', formattedQuery);
+                    let url = engine.url.replace('{query}', formattedQuery);
+                    
+                    // ValueBooksの特殊処理
+                    if (engineId === 'valuebooks') {
+                        // kana_wordsパラメータを追加
+                        const kanaWords = encodeURIComponent(`["${query}"]`);
+                        url += `&kana_words=${kanaWords}&conditions_sorting=1`;
+                    }
+                    
                     window.open(url, '_blank');
                 }
             });
