@@ -775,7 +775,7 @@
             fril: { url: 'https://fril.jp/s?query={query}', isAI: false },
             paypayfleamarket: { url: 'https://paypayfleamarket.yahoo.co.jp/search/{query}?page=1', isAI: false },
             jmty: { url: 'https://jmty.jp/all/sale?keyword={query}', isAI: false },
-            mbok: { url: 'https://www.mbok.jp/_l?q={query}', isAI: false },
+            mbok: { url: 'https://www.mbok.jp/_l?_CODE=%82%A0&r=fc&gq=1&mem=1&_SRC=header_sr&q={query}', isAI: false, needsShiftJIS: true },
             
             // 中国サイト
             temu: { url: 'https://www.temu.com/search_result.html?search_key={query}', isAI: false },
@@ -952,6 +952,29 @@
             return encodeURIComponent(query);
         }
         
+        // Shift-JISエンコーディング用の簡易変換
+        // 注：完全な変換ではなく、モバオク用の暫定対応
+        function toShiftJISHex(str) {
+            // よく使われる文字の簡易マッピング
+            const shiftJISMap = {
+                'ラ': '%83%89',
+                'ケ': '%83P',
+                'ッ': '%83b',
+                'ト': '%83g'
+            };
+            
+            let result = '';
+            for (let char of str) {
+                if (shiftJISMap[char]) {
+                    result += shiftJISMap[char];
+                } else {
+                    // その他の文字はUTF-8エンコードを使用（完全対応ではない）
+                    result += encodeURIComponent(char);
+                }
+            }
+            return result;
+        }
+        
         // AI検索用のクエリ生成
         function getAIQuery(query, engineId) {
             const aiMode = document.querySelector('input[name="aiMode"]:checked').value;
@@ -979,7 +1002,15 @@
                 if (checkbox && checkbox.checked) {
                     const engine = searchEngines[engineId];
                     const searchQuery = engine.isAI ? getAIQuery(query, engineId) : query;
-                    const formattedQuery = formatQuery(searchQuery);
+                    let formattedQuery;
+                    
+                    // モバオクの特殊処理（Shift-JISエンコーディング）
+                    if (engine.needsShiftJIS) {
+                        formattedQuery = toShiftJISHex(searchQuery);
+                    } else {
+                        formattedQuery = formatQuery(searchQuery);
+                    }
+                    
                     let url = engine.url.replace('{query}', formattedQuery);
                     
                     // ValueBooksの特殊処理
