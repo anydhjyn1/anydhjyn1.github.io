@@ -354,6 +354,14 @@
                     <input type="checkbox" id="saiyasune" class="info-checkbox" checked>
                     <label for="saiyasune"><a href="https://www.saiyasune.com/" target="_blank">最安値.com</a></label>
                 </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="aucfan" class="info-checkbox" checked>
+                    <label for="aucfan"><a href="https://aucfan.com/" target="_blank">オークファン</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ritlweb" class="info-checkbox" checked>
+                    <label for="ritlweb"><a href="https://auction.ritlweb.com/" target="_blank">リットリンク</a></label>
+                </div>
             </div>
         </div>
         
@@ -470,6 +478,22 @@
                 <div class="checkbox-item">
                     <input type="checkbox" id="mercari" class="flea-checkbox" checked>
                     <label for="mercari"><a href="https://www.mercari.com/jp/" target="_blank">メルカリ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fril" class="flea-checkbox" checked>
+                    <label for="fril"><a href="https://fril.jp/" target="_blank">フリル（ラクマ）</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="paypayfleamarket" class="flea-checkbox" checked>
+                    <label for="paypayfleamarket"><a href="https://paypayfleamarket.yahoo.co.jp/" target="_blank">PayPayフリマ</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="jmty" class="flea-checkbox" checked>
+                    <label for="jmty"><a href="https://jmty.jp/" target="_blank">ジモティー</a></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mbok" class="flea-checkbox" checked>
+                    <label for="mbok"><a href="https://www.mbok.jp/" target="_blank">モバオク</a></label>
                 </div>
             </div>
         </div>
@@ -721,6 +745,8 @@
         const searchEngines = {
             // 情報サイト
             saiyasune: { url: 'https://www.saiyasune.com/I1W{query}.html', isAI: false },
+            aucfan: { url: 'https://aucfan.com/search1/q-{query}/s-mix/?o=de&location=0&shopid=', isAI: false },
+            ritlweb: { url: 'https://auction.ritlweb.com/search/{query}', isAI: false },
             
             // 検索エンジン
             google: { url: 'https://www.google.com/search?q={query}', isAI: false },
@@ -746,6 +772,10 @@
             // フリマサイト
             yahooAuctions: { url: 'https://auctions.yahoo.co.jp/search/search?p={query}', isAI: false },
             mercari: { url: 'https://www.mercari.com/jp/search/?keyword={query}', isAI: false },
+            fril: { url: 'https://fril.jp/s?query={query}', isAI: false },
+            paypayfleamarket: { url: 'https://paypayfleamarket.yahoo.co.jp/search/{query}?page=1', isAI: false },
+            jmty: { url: 'https://jmty.jp/all/sale?keyword={query}', isAI: false },
+            mbok: { url: 'https://www.mbok.jp/_l?q={query}', isAI: false },
             
             // 中国サイト
             temu: { url: 'https://www.temu.com/search_result.html?search_key={query}', isAI: false },
